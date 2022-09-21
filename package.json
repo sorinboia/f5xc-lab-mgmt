@@ -1,0 +1,30 @@
+{
+  "name": "f5xc-lab-mgmt",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "fastify": "^4.5.3",
+    "lodash": "^4.17.21",
+    "lowdb": "^3.0.0",
+    "path": "^0.12.7",
+    "pino-pretty": "^9.1.0",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sorinboia/f5xc-lab-mgmt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sorinboia/f5xc-lab-mgmt/issues"
+  },
+  "homepage": "https://github.com/sorinboia/f5xc-lab-mgmt#readme"
+}

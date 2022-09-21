@@ -1,0 +1,13 @@
+
+
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"domain": "f5-sales-public.console.ves.volterra.io", "key": "BLAHBLAHBLAH"}' \
+    http://localhost:8080/v1/f5xcred
+
+
+
+
+    curl -X POST -H "Content-Type: application/json" \
+    -d '{"email": "sorinboia11@gmail.com", "udfHost": "a2ee904e-b8a9-479d-9012-bd3a3de20d5e.access.udf.f5.com", "region": "europe-west2", "awsAccountId": "434406082257", "awsApiKey": "AKIAWKJE6Y3IXSCNDK7I", "awsApiSecret": "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", "awsAz": "eu-west-2a", "awsRegion": "eu-west-2", "subnetId": "subnet-057b2f963987ff680", "vpcId": "vpc-05802ef27b5378812" }' \
+    http://localhost:8080/v1/student
+
