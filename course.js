@@ -19,13 +19,28 @@ const validateStudent = async ({udfHost,ip}) => {
     return true || result.address == ip; 
 }
 
+
+
+const makeid = (length) => {
+    let result           = '';
+    const characters       = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
+
+
 const createNames = (email) => {
     const lowerEmail = email.toLowerCase();
-    const id = lowerEmail.replace(/[^a-zA-Z0-9]/g, "") + 2;
-    const namespace = 'ns' + id;
-    const ccName = 'cc' + id;
-    const awsSiteName = 'as' + id;
-
+    const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'') + '-' + makeid(6);
+    const id = lowerEmail.replace(/[^a-zA-Z0-9]/g, "").split("@")[0] + '-' + randomPart;
+    const namespace = 'ns-' + id;
+    const ccName = 'cc-' + id;
+    const awsSiteName = 'as-' + id;
+    console.log(namespace);
     return { lowerEmail, namespace, ccName, awsSiteName};
 }
 
@@ -42,7 +57,8 @@ class Course {
 
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {
         this.log[email] = log;        
-        const { lowerEmail, namespace, ccName, awsSiteName} = createNames(email);
+        const createdNames = createNames(email);
+        const { lowerEmail, namespace, ccName, awsSiteName} = createdNames;
         
         
         let err;
@@ -81,13 +97,14 @@ class Course {
             
 
             if (!err) {
-                this.db.data.students[email] = { email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, failedChecks: 0, log };
+                this.db.data.students[email] = { email, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, failedChecks: 0, log };
+
                 this.db.write();
                 log.info('Student created');
             } else {
                 log.warn('Student creation failed, reverting config');
                 
-                await this.deleteStudent({email, log})
+                await this.deleteStudent({createdNames, log})
 
                 return err;
             }
@@ -102,9 +119,9 @@ class Course {
         
     }
 
-    async deleteStudent({ email, log }) {
+    async deleteStudent({ createdNames, log }) {
         
-        const { lowerEmail, namespace, ccName, awsSiteName} = createNames(email);        
+        const { lowerEmail, namespace, ccName, awsSiteName} = createdNames;        
         await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
             log.warn({operation:'deleteAwsVpcSite',...e});             
         });
@@ -135,10 +152,11 @@ class Course {
                     
                     this.db.data.students[email].failedChecks++;
                     if ( this.db.data.students[email].failedChecks >= 3) {
-                        delete this.db.data.students[email];
-                        this.deleteStudent({ email, log }).catch((e) =>  { 
+                        
+                        this.deleteStudent({ createdNames: this.db.data.students[email].createdNames, log }).catch((e) =>  { 
                             log.warn({operation:'deleteInactiveStudents',...e});                             
-                        });;                        
+                        });
+                        delete this.db.data.students[email];
                         this.db.write();
                         log.info(email + ' was deleted');                        
                     }                    
