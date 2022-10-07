@@ -40,7 +40,7 @@ const createNames = (email) => {
     const namespace = 'ns-' + id;
     const ccName = 'cc-' + id;
     const awsSiteName = 'as-' + id;
-    console.log(namespace);
+    
     return { lowerEmail, namespace, ccName, awsSiteName};
 }
 
@@ -52,7 +52,7 @@ class Course {
         this.db.read();
         this.db.data = this.db.data || { students: {} };
         this.log = {};
-        this.deleteInactiveStudents();                
+        this.periodicChecks();                
     }
 
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {
@@ -97,7 +97,7 @@ class Course {
             
 
             if (!err) {
-                this.db.data.students[email] = { email, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, failedChecks: 0, log };
+                this.db.data.students[email] = { email, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, failedChecks: 0, log };
 
                 this.db.write();
                 log.info('Student created');
@@ -138,6 +138,43 @@ class Course {
         });
                 
 
+    }
+
+    periodicChecks() {
+        this.deleteInactiveStudents();
+        this.checkF5xcTf()       ;
+    }
+
+    checkF5xcTf() {
+        setInterval(async (x) => {
+            for (const [email,student] of Object.entries(this.db.data.students)) {                
+                const log = this.log[email] || fastifyLog;
+                const { f5xcTf } = student;
+                const { awsSiteName } = student.createdNames;
+                                
+                if (student.f5xcTf.awsVpcSite !== 'APPLIED') {
+                    const res = await this.f5xc.getAwsVpcSite({name: awsSiteName});
+                                
+                    const  {apply_state, error_output  } = res.status.apply_status;
+
+                    const error = res.status.apply_status.error_output
+
+                    this.db.data.students[email].f5xcTf.awsVpcSite = apply_state;
+                    this.db.write();
+                    
+                    
+                    if (error_output) {
+                        log.info(`${email} TF issue Re-Applying TF. Error ${error_output}`);
+                        if (error_output.indexOf('PendingVerification' > -1 )) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'})
+                        
+                    }   
+                }
+                
+                
+                
+                
+            }
+        },30000);
     }
 
     deleteInactiveStudents() {                                    

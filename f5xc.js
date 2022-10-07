@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 class F5xc {
     constructor(domain,key) {
         this.axios = axios.create({
@@ -160,16 +160,28 @@ class F5xc {
         
         await this.axios.post(endPoint,data);
 
-        // This does tf apply        
-        await this.axios.post(`/api/terraform/namespaces/system/terraform/aws_vpc_site/${name}/run`,{ action: 'APPLY' });
-        
 
+        
+        // This does tf apply. We wait 5 sec, sometimes the tf paramters are not available        
+        await delay(5000);
+        await this.awsVpcSiteTF({name,action: 'APPLY'});
+    }
+
+    async awsVpcSiteTF({name,action}) {
+        await this.axios.post(`/api/terraform/namespaces/system/terraform/aws_vpc_site/${name}/run`,{ action });        
     }
 
     async deleteAwsVpcSite ({name}) {        
         const endPoint = `/api/config/namespaces/system/aws_vpc_sites/${name}`
                 
         await this.axios.delete(endPoint);
+    }
+
+    async getAwsVpcSite({name}) {
+       
+        const endPoint = `/api/config/namespaces/system/terraform_parameters/aws_vpc_site/${name}/status`        
+        const { data } = await this.axios.get(endPoint);
+        return data; 
     }
 }
 
