@@ -15,5 +15,5 @@ COPY . .
 # Bundle app source
 COPY . .
 
-EXPOSE 80
+EXPOSE 8080
 CMD ["sh","-c", "node index.js"]

@@ -183,6 +183,29 @@ class F5xc {
         const { data } = await this.axios.get(endPoint);
         return data; 
     }
+
+    async listRegistrationsByState({state}) {       
+        const endPoint = `/api/register/namespaces/system/listregistrationsbystate`        
+        const { data } = await this.axios.post(endPoint,{state});
+        return data; 
+    }
+
+    async listRegistrationsBySite({name}) {       
+        const endPoint = `/api/register/namespaces/system/registrations_by_site/${name}`        
+        const { data } = await this.axios.get( endPoint );
+        return data; 
+    }
+
+    async registrationApprove({name,passport}) {       
+        const endPoint = `/api/register/namespaces/system/registration/${name}/approve`        
+        const { data } = await this.axios.post(endPoint,{
+            name,
+            passport,
+            state: 'APPROVED'
+        });
+        return data; 
+    }
+
 }
 
 

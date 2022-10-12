@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const axios = require('axios');
 const execSync = require('child_process').execSync;
 
@@ -26,18 +28,11 @@ const exec = (cmd) => {
     return result;
 }
 
-const makeid = (length) => {
-    let result           = '';
-    const characters       = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
+//const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
 
-const f5xcLabMgmtDomain = '';
+const f5xcLabMgmtDomain = 'http://46.117.182.180:52345';
 
+const onPremCeIp = '10.1.1.7:65500';
 
 
 const main = async  () => {
@@ -73,9 +68,30 @@ const main = async  () => {
     }
     
     logger.info(dataToPost);
+    
+    const createdUserData = (await axios.post(`${f5xcLabMgmtDomain}/v1/student`,dataToPost)).data;
+
+    logger.info(createdUserData);
+    
 
     
-    
+
+    const onPremCePostData = {
+        token: '18db4163-9f4f-438a-b922-c617ae7ac4ed',
+        cluster_name: createdUserData.createdNames.ceOnPrem.clusterName,
+        hostname: createdUserData.createdNames.ceOnPrem.hostname,
+        latitude: '32.06440042393975',
+        longitude: '34.894059728328465',
+        certified_hardware: 'kvm-voltmesh',
+        primary_outside_nic: 'eth0'
+    }
+    const onPremCeRegData = (await axios.post(`https://${onPremCeIp}/api/ves.io.vpm/introspect/write/ves.io.vpm.config/update`, onPremCePostData,{
+        headers: {
+            Authorization: 'Basic YWRtaW46Vm9sdGVycmExMjM='
+        }
+    })).data;
+
+    logger.info(`onPremCeRegData ${onPremCeRegData}`)
 }
 
 

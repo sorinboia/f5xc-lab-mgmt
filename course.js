@@ -34,21 +34,26 @@ const makeid = (length) => {
 
 
 const createNames = (email) => {
+    const makeId = makeid(6);
     const lowerEmail = email.toLowerCase();
-    const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'') + '-' + makeid(6);
+    const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'') + '-' + makeId;
     const id = lowerEmail.replace(/[^a-zA-Z0-9]/g, "").split("@")[0] + '-' + randomPart;
     const namespace = 'ns-' + id;
     const ccName = 'cc-' + id;
     const awsSiteName = 'as-' + id;
+    const ceOnPrem = {
+        clusterName: 'ceop-' + id,
+        hostname: 'ceophost' + id
+    }
     
-    return { lowerEmail, namespace, ccName, awsSiteName};
+    return { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem};
 }
 
 
 class Course {
     constructor({domain,key}) {
         this.f5xc = new F5xc(domain,key);
-        this.db = new LowSync(new JSONFileSync('db.json'));
+        this.db = new LowSync(new JSONFileSync('./db/db.json'));
         this.db.read();
         this.db.data = this.db.data || { students: {} };
         this.log = {};
@@ -56,9 +61,10 @@ class Course {
     }
 
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {
+        if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
         this.log[email] = log;        
         const createdNames = createNames(email);
-        const { lowerEmail, namespace, ccName, awsSiteName} = createdNames;
+        const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem } = createdNames;
         
         
         let err;
@@ -89,7 +95,7 @@ class Course {
             }
 
             if (!err) {
-                await this.f5xc.createAwsVpcSite({name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId }).catch((e) =>  {                     
+                await this.f5xc.createAwsVpcSite({makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId }).catch((e) =>  {                     
                     log.warn({operation:'createAwsVpcSite',...e}); 
                     err = {operation:'createAwsVpcSite',...e};                
                 });
@@ -97,10 +103,11 @@ class Course {
             
 
             if (!err) {
-                this.db.data.students[email] = { email, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, failedChecks: 0, log };
+                this.db.data.students[email] = { email, makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
                 this.db.write();
                 log.info('Student created');
+                return this.db.data.students[email];
             } else {
                 log.warn('Student creation failed, reverting config');
                 
@@ -119,9 +126,12 @@ class Course {
         
     }
 
-    async deleteStudent({ createdNames, log }) {
-        
-        const { lowerEmail, namespace, ccName, awsSiteName} = createdNames;        
+    async deleteStudent({ email, createdNames, log }) {
+        let student;
+        if (email) student = this.db.data.students[email]; 
+
+        const { lowerEmail, namespace, ccName, awsSiteName} =  student.createdNames || createdNames;
+       
         await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
             log.warn({operation:'deleteAwsVpcSite',...e});             
         });
@@ -137,12 +147,41 @@ class Course {
             log.warn({operation:'deleteNS',...e});             
         });
                 
+        if (this.db.data.students[email]) {
+
+            delete this.db.data.students[email];
+            this.db.write();
+        }
+        
 
     }
 
     periodicChecks() {
         this.deleteInactiveStudents();
-        this.checkF5xcTf()       ;
+        this.checkF5xcTf();
+        this.checkCeReg();
+    }
+
+    checkCeReg() {
+        setInterval(async (x) => {
+            for (const [email,student] of Object.entries(this.db.data.students)) {                
+                const log = this.log[email] || fastifyLog;
+                
+                const { status, clusterName } = student.ceRegistration;
+                                
+                if (status !== 'APPROVED') {
+                    const siteData = await this.f5xc.listRegistrationsBySite({name: clusterName});
+                    const regName = siteData.items[0].name;
+                    const regPassport = siteData.items[0].object.spec.gc_spec.passport;
+                    const approvalState = await this.f5xc.registrationApprove({name:regName, passport:regPassport })
+                    log.info('CE on prem Approved');
+                    log.info(approvalState);
+                    this.db.data.students[email].ceRegistration.name = regName;
+                    this.db.data.students[email].ceRegistration.state = 'APPROVED';
+                    this.db.write();
+                }                                                                
+            }
+        },10000);
     }
 
     checkF5xcTf() {
@@ -190,11 +229,10 @@ class Course {
                     this.db.data.students[email].failedChecks++;
                     if ( this.db.data.students[email].failedChecks >= 3) {
                         
-                        this.deleteStudent({ createdNames: this.db.data.students[email].createdNames, log }).catch((e) =>  { 
+                        this.deleteStudent({ email, log }).catch((e) =>  { 
                             log.warn({operation:'deleteInactiveStudents',...e});                             
                         });
-                        delete this.db.data.students[email];
-                        this.db.write();
+                        
                         log.info(email + ' was deleted');                        
                     }                    
                 });                

@@ -1,9 +1,10 @@
 import axios  from 'axios';
 
-const data = {"email": "s.boiangiu@f5.com", "udfHost": "6fbb0197-0df8-4f52-8694-4250e4afef1d.access.udf.f5.com", "region": "europe-west2", "awsAccountId": "371774287156", "awsApiKey": "AKIAVND3ZNU2KV4GE4HA", "awsApiSecret": "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", "awsAz": "eu-west-2a", "awsRegion": "eu-west-2", "subnetId": "subnet-0983d2f7468949b99", "vpcId": "vpc-0a2ab2e0da96b1c3e" }
+const data = {"email": "s.boiangiu@f5.com", "udfHost": "0406f98c-4a62-48ef-9c76-28efad4bddde.access.udf.f5.com", "region": "europe-west2", "awsAccountId": "833786255869", "awsApiKey": "AKIA4EIMITH65USH7HVF", "awsApiSecret": "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", "awsAz": "eu-west-2a", "awsRegion": "eu-west-2", "subnetId": "subnet-0ae63d2468bfe6e26", "vpcId": "vpc-0d3cfbee602fa9faa" }
 
 
-const emails = ['sorinboia@gmail.com','sorinboia1@gmail.com','sorinboia2@gmail.com','sorinboia3@gmail.com','sorinboi4@gmail.com'];
+//const emails = ['sorinboia@gmail.com','sorinboia1@gmail.com','sorinboia2@gmail.com','sorinboia3@gmail.com','sorinboi4@gmail.com'];
+const emails = ['sorinboia1@gmail.com']
 for (const email of emails) {
     data.email = email;
     axios.post('http://localhost:8080/v1/student',data)
