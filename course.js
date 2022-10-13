@@ -190,7 +190,7 @@ class Course {
                     
                 }                                                                
             }
-        },10000);
+        },30000);
     }
 
     checkF5xcTf() {
@@ -200,34 +200,28 @@ class Course {
                 const log = this.log[email] || fastifyLog;
                 const { f5xcTf, state } = student;
                 const { awsSiteName } = student.createdNames;
-                console.log('a',email,state,awsSiteName);
+                
                 if (student.f5xcTf.awsVpcSite !== 'APPLIED' || state == 'deleting') {
                     const res = await this.f5xc.getAwsVpcSite({name: awsSiteName}).catch((e) =>  { 
-                        log.warn({operation:'getAwsVpcSite',...e});             
+                        if (state != 'deleting') log.warn({operation:'getAwsVpcSite',...e});             
                     });                                
+                    
                     if (!res) return;
+                    
                     const  {apply_state, error_output } = res.status.apply_status;
                 
-                    if (apply_state) {
-                        console.log('applied state',apply_state)
+                    if (apply_state) {                        
                         this.db.data.students[email].f5xcTf.awsVpcSite = apply_state;
+                        this.db.write();
                     }
-                    this.db.write();
-                    
-                    console.log('1',email, apply_state, error_output);
+                                                            
                     if (error_output) {
                         log.info(`${email} TF issue . Error ${error_output}`);
-                        if (error_output.indexOf('PendingVerification') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});       
-                        
-                        console.log('2',error_output.indexOf('InvalidClientToken'),state);
-                        
+                        if (error_output.indexOf('PendingVerification') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});                                                                               
                         if (error_output.indexOf('InvalidClientToken') > -1  && state == 'deleting') {
-                            console.log('Trying to delete');
+                            
                             await this.f5xc.deleteAwsVpcSite({name: awsSiteName});       
-
-                        }
-                        
-
+                        }                        
                     }   
                 }                                                            
             }
