@@ -103,7 +103,7 @@ class Course {
             
 
             if (!err) {
-                this.db.data.students[email] = { email, makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
+                this.db.data.students[email] = { email, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
                 this.db.write();
                 log.info('Student created');
@@ -127,10 +127,12 @@ class Course {
     }
 
     async deleteStudent({ email, createdNames, log }) {
-        let student;
-        if (email) student = this.db.data.students[email]; 
+        let studentCreatedNames;
+        if (email) studentCreatedNames = this.db.data.students[email].createdNames; 
 
-        const { lowerEmail, namespace, ccName, awsSiteName} =  student.createdNames || createdNames;
+        const { lowerEmail, namespace, ccName, awsSiteName, ceOnPrem} =  studentCreatedNames || createdNames;
+
+        
        
         await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
             log.warn({operation:'deleteAwsVpcSite',...e});             
@@ -146,14 +148,19 @@ class Course {
         await this.f5xc.deleteNS(namespace).catch((e) =>  { 
             log.warn({operation:'deleteNS',...e});             
         });
+
+        await this.f5xc.deleteSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
+            log.warn({operation:'deleteSite',...e});             
+        });
                 
         if (this.db.data.students[email]) {
-
-            delete this.db.data.students[email];
-            this.db.write();
-        }
-        
-
+            log.info(email + ' is being deleted');
+            setTimeout(() => {
+                delete this.db.data.students[email];
+                this.db.write();
+                log.info(email + ' was deleted');  
+            }, 240000);
+        }        
     }
 
     periodicChecks() {
@@ -167,51 +174,62 @@ class Course {
             for (const [email,student] of Object.entries(this.db.data.students)) {                
                 const log = this.log[email] || fastifyLog;
                 
-                const { status, clusterName } = student.ceRegistration;
+                const { state, clusterName } = student.ceRegistration;
                                 
-                if (status !== 'APPROVED') {
+                if (state !== 'APPROVED') {                    
                     const siteData = await this.f5xc.listRegistrationsBySite({name: clusterName});
-                    const regName = siteData.items[0].name;
-                    const regPassport = siteData.items[0].object.spec.gc_spec.passport;
-                    const approvalState = await this.f5xc.registrationApprove({name:regName, passport:regPassport })
-                    log.info('CE on prem Approved');
-                    log.info(approvalState);
-                    this.db.data.students[email].ceRegistration.name = regName;
-                    this.db.data.students[email].ceRegistration.state = 'APPROVED';
-                    this.db.write();
+                    if (siteData.items[0]) {
+                        const regName = siteData.items[0].name;
+                        const regPassport = siteData.items[0].object.spec.gc_spec.passport;
+                        const approvalState = await this.f5xc.registrationApprove({name:regName, passport:regPassport })
+                        log.info('CE on prem Approved');                    
+                        this.db.data.students[email].ceRegistration.name = regName;
+                        this.db.data.students[email].ceRegistration.state = 'APPROVED';
+                        this.db.write();
+                    }
+                    
                 }                                                                
             }
         },10000);
     }
 
     checkF5xcTf() {
+        // Will need to do some refactoring on this later
         setInterval(async (x) => {
             for (const [email,student] of Object.entries(this.db.data.students)) {                
                 const log = this.log[email] || fastifyLog;
-                const { f5xcTf } = student;
+                const { f5xcTf, state } = student;
                 const { awsSiteName } = student.createdNames;
-                                
-                if (student.f5xcTf.awsVpcSite !== 'APPLIED') {
-                    const res = await this.f5xc.getAwsVpcSite({name: awsSiteName});
-                                
-                    const  {apply_state, error_output  } = res.status.apply_status;
-
-                    const error = res.status.apply_status.error_output
-
-                    this.db.data.students[email].f5xcTf.awsVpcSite = apply_state;
+                console.log('a',email,state,awsSiteName);
+                if (student.f5xcTf.awsVpcSite !== 'APPLIED' || state == 'deleting') {
+                    const res = await this.f5xc.getAwsVpcSite({name: awsSiteName}).catch((e) =>  { 
+                        log.warn({operation:'getAwsVpcSite',...e});             
+                    });                                
+                    if (!res) return;
+                    const  {apply_state, error_output } = res.status.apply_status;
+                
+                    if (apply_state) {
+                        console.log('applied state',apply_state)
+                        this.db.data.students[email].f5xcTf.awsVpcSite = apply_state;
+                    }
                     this.db.write();
                     
-                    
+                    console.log('1',email, apply_state, error_output);
                     if (error_output) {
-                        log.info(`${email} TF issue Re-Applying TF. Error ${error_output}`);
-                        if (error_output.indexOf('PendingVerification' > -1 )) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'})
+                        log.info(`${email} TF issue . Error ${error_output}`);
+                        if (error_output.indexOf('PendingVerification') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});       
                         
+                        console.log('2',error_output.indexOf('InvalidClientToken'),state);
+                        
+                        if (error_output.indexOf('InvalidClientToken') > -1  && state == 'deleting') {
+                            console.log('Trying to delete');
+                            await this.f5xc.deleteAwsVpcSite({name: awsSiteName});       
+
+                        }
+                        
+
                     }   
-                }
-                
-                
-                
-                
+                }                                                            
             }
         },30000);
     }
@@ -227,17 +245,17 @@ class Course {
                   }) }).catch((e) => {
                     
                     this.db.data.students[email].failedChecks++;
-                    if ( this.db.data.students[email].failedChecks >= 3) {
-                        
+                    if ( this.db.data.students[email].failedChecks >= 5 && this.db.data.students[email].state != 'deleting') {
+                        this.db.data.students[email].state = 'deleting';
                         this.deleteStudent({ email, log }).catch((e) =>  { 
                             log.warn({operation:'deleteInactiveStudents',...e});                             
                         });
                         
-                        log.info(email + ' was deleted');                        
+                                              
                     }                    
                 });                
             }
-        },5000);
+        },20000);
     }
 }
 

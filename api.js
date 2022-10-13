@@ -21,7 +21,7 @@ import Course from './course.js';
 let c;
 
 const args = process.argv.slice(2);
-if (args[0]) {
+if (args[0]) {  
   c = new Course({domain:args[0],key:args[1]});
 }
 

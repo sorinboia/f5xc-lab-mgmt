@@ -10,8 +10,7 @@ class F5xc {
             }
         });
     
-        this.axios.interceptors.request.use(function (config) {            
-            //console.log(config);
+        this.axios.interceptors.request.use(function (config) {                        
             return config;
             }, function (error) {            
                 return Promise.reject(error.request);
@@ -206,6 +205,15 @@ class F5xc {
         return data; 
     }
 
+    async deleteSite({name}) {       
+        const endPoint = `/api/register/namespaces/system/site/${name}/state`        
+        const { data } = await this.axios.post(endPoint, {
+            namespace: 'system',
+            name,
+            state: 7
+        });
+        return data; 
+    }
 }
 
 
