@@ -29,7 +29,7 @@ resource "aws_instance" "microk8s" {
       
       snap install microk8s --classic
       microk8s.start
-      microk8s.enable dns helm
+      microk8s.enable dns ingress
       snap install kubectl --classic
       sh -c '/snap/bin/microk8s.config > /home/ubuntu/.kube/kubeconfig'
       chown ubuntu /home/ubuntu/.kube
