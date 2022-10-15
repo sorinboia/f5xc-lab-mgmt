@@ -24,8 +24,7 @@ resource "aws_subnet" "public-subnet" {
 
   tags = {
     Name = "f5xc Web Public Subnet"
-    "kubernetes.io/role/elb" = "1"
-    "kubernetes.io/cluster/${var.cluster-name}-${random_id.random-string.dec}" = "shared"
+
   }
 }
 
@@ -38,8 +37,7 @@ resource "aws_subnet" "private-subnet" {
 
   tags = {
     Name = "f5xc Web Private Subnet"
-    "kubernetes.io/role/internal-elb" = "1"
-    "kubernetes.io/cluster/${var.cluster-name}-${random_id.random-string.dec}" = "shared"
+
   }
 }
 
