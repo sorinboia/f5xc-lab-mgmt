@@ -33,7 +33,7 @@ variable "private_subnet_cidr" {
   default     = "10.0.3.0/24"
 }
 
-variable "cluster-name" {
-  default = "terraform-eks"
-  type    = string
+resource "aws_key_pair" "aws_key" {
+  key_name   = "ssh_key"
+  public_key = file("/home/ubuntu/lab/udf/aws_public.key")
 }
