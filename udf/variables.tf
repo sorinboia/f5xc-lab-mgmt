@@ -35,5 +35,5 @@ variable "private_subnet_cidr" {
 
 resource "aws_key_pair" "aws_key" {
   key_name   = "ssh_key"
-  public_key = file("/home/ubuntu/lab/udf/aws_public.key")
+  public_key = file("/home/ubuntu/lab/udf/aws_public.pub")
 }
