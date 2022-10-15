@@ -28,6 +28,8 @@ const exec = (cmd) => {
     return result;
 }
 
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 //const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
 
 const f5xcLabMgmtDomain = 'http://46.117.182.180:52345';
@@ -73,9 +75,6 @@ const main = async  () => {
 
     logger.info(createdUserData);
     
-
-    
-
     const onPremCePostData = {
         token: '18db4163-9f4f-438a-b922-c617ae7ac4ed',
         cluster_name: createdUserData.createdNames.ceOnPrem.clusterName,
@@ -91,7 +90,11 @@ const main = async  () => {
         }
     })).data;
 
-    logger.info(`onPremCeRegData ${onPremCeRegData}`)
+    logger.info(`onPremCeRegData ${JSON.stringify(onPremCeRegData)}`)
+
+    //await delay(60000);
+    exec(`ssh -o "StrictHostKeyChecking no" -i ~/.ssh/aws.key ubuntu@${tfOutput.microk8s_ip.value} "microk8s config" > ~/.kube/config`);
+
 }
 
 

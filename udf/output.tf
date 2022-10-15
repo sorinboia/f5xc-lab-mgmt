@@ -13,3 +13,7 @@ output "az" {
 output "subnet_id" {
   value = aws_subnet.public-subnet.id
 }
+
+output "microk8s_ip" {
+  value = aws_instance.microk8s.public_ip
+}
