@@ -3,7 +3,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["*ubuntu*22.04*amd64*"]
+    values = ["*ubuntu*22.04*amd64*20221014"]
   }
 }
 
@@ -21,6 +21,20 @@ resource "aws_instance" "microk8s" {
 
   user_data = <<-EOF
       #!/bin/bash
+      set -e
+
+      apt-get update -y
+      apt-get upgrade -y
+
+      
+      snap install microk8s --classic
+      microk8s.start
+      microk8s.enable dns helm
+      snap install kubectl --classic
+      sh -c '/snap/bin/microk8s.config > /home/ubuntu/.kube/kubeconfig'
+      chown ubuntu /home/ubuntu/.kube
+      usermod -a -G microk8s ubuntu
+      "alias k='kubectl'" >> /home/ubuntu/.bashrc
     EOF
 
 
