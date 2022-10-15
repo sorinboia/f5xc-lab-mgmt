@@ -56,6 +56,8 @@ const main = async  () => {
 
     exec(`aws configure set aws_access_key_id ${awsApiKey}`);
     exec(`aws configure set aws_secret_access_key ${awsApiSecret}`);
+    exec('terraform init');
+    exec('terraform apply --auto-approve');
     exec('terraform apply --auto-approve');
 
     const tfOutput = JSON.parse(exec('terraform output -json'));    
