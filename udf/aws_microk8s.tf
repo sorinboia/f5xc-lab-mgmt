@@ -1,16 +1,15 @@
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["self"]
 
   filter {
     name   = "name"
-    values = ["ubuntu-microk8s-*"]
+    values = ["*ubuntu*22.04*amd64*"]
   }
 }
 
 resource "aws_instance" "microk8s" {
   ami           = data.aws_ami.ubuntu.image_id
-  instance_type = "t3.2xlarge"
+  instance_type = "t2.medium"
 
   associate_public_ip_address = true
   key_name                    = aws_key_pair.aws_key.key_name
