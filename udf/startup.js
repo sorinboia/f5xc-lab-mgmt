@@ -30,9 +30,9 @@ const exec = (cmd) => {
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-//const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
+const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
 
-const f5xcLabMgmtDomain = 'http://46.117.182.180:52345';
+//const f5xcLabMgmtDomain = 'http://46.117.182.180:52345';
 
 const onPremCeIp = '10.1.1.7:65500';
 
