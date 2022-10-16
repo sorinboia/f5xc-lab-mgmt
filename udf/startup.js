@@ -96,6 +96,8 @@ const main = async  () => {
 
     //await delay(60000);
     exec(`ssh -o "StrictHostKeyChecking no" -i ~/.ssh/aws.key ubuntu@${tfOutput.microk8s_ip.value} "microk8s config" > ~/.kube/config`);
+    exec(`sed -i 's/certificate-authority-data.*//g' ~/.kube/config`);
+    exec(`sed -i 's/server.*16443/server: https:\/\/${tfOutput.microk8s_ip.value}:16443\n    insecure-skip-tls-verify: true/g' ~/.kube/config`);
 
 }
 
