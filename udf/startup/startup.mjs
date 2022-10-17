@@ -60,7 +60,7 @@ const terraform = async () => {
   try {
     exec(`aws configure set aws_access_key_id ${db.data.udfMetadata.awsApiKey}`);
     exec(`aws configure set aws_secret_access_key ${db.data.udfMetadata.awsApiSecret}`);
-    exec('terraform terraform -chdir=~/lab/udf/terraform init');
+    exec('terraform -chdir=~/lab/udf/terraform init');
     exec('terraform -chdir=~/lab/udf/terraform apply --auto-approve');
     exec('terraform -chdir=~/lab/udf/terraform apply --auto-approve');
     output = JSON.parse(exec('terraform -chdir=~/lab/udf/terraform output -json'));    
