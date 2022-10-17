@@ -219,13 +219,6 @@ const main = async  () => {
         if (result.state != 1 ) break;
       }          
     }
-    
-
-    
-
-
-
-
 }
 
 
