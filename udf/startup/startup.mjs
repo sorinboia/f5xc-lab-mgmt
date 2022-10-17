@@ -60,10 +60,10 @@ const terraform = async () => {
   try {
     exec(`aws configure set aws_access_key_id ${db.data.udfMetadata.awsApiKey}`);
     exec(`aws configure set aws_secret_access_key ${db.data.udfMetadata.awsApiSecret}`);
-    exec('terraform init ../terraform/');
-    exec('terraform apply --auto-approve ../terraform/');
-    exec('terraform apply --auto-approve ../terraform/');
-    output = JSON.parse(exec('terraform output -json ../terraform/'));    
+    exec('terraform terraform -chdir=~/lab/udf/terraform init');
+    exec('terraform -chdir=~/lab/udf/terraform apply --auto-approve');
+    exec('terraform -chdir=~/lab/udf/terraform apply --auto-approve');
+    output = JSON.parse(exec('terraform -chdir=~/lab/udf/terraform output -json'));    
     state = 1;
     db.write();
   } catch (e) {    
@@ -208,6 +208,7 @@ const main = async  () => {
         db.data.functions[key].output = result.output;
         db.data.functions[key].error = result.error;
         db.write();
+        if (result.state != 1 ) break;
       }          
     }
     
