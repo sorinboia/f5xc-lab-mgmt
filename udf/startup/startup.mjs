@@ -135,7 +135,7 @@ const installAwsMicrok8s = async () => {
     exec(`ssh -o "StrictHostKeyChecking no" -i ~/.ssh/aws.key ubuntu@${tfOutput.microk8s_ip.value} ` +
           '"sudo apt-get update -y && ' +
           'sudo apt-get upgrade -y && ' +
-          'snap install microk8s --classic && ' +
+          'sudo snap install microk8s --classic && ' +
           'sudo microk8s.start && ' +
           'sudo microk8s.enable dns ingress && ' +
           'sudo usermod -a -G microk8s ubuntu"');
