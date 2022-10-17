@@ -1,10 +1,11 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-const axios = require('axios');
-const execSync = require('child_process').execSync;
+import axios from 'axios';
+import { execSync } from 'child_process';
 
-const pino = require('pino');
-const pretty = require('pino-pretty');
+import pino from 'pino';
+import pretty from 'pino-pretty';
+
 const createSonicBoom = (dest) =>
   pino.destination({ dest: dest, sync: true, append: false, mkdir: true });
 const streams = [
