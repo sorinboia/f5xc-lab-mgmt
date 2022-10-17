@@ -66,7 +66,7 @@ const terraform = async () => {
     output = JSON.parse(exec('terraform output -json ../terraform/'));    
     state = 1;
     db.write();
-  } catch (e) {
+  } catch (e) {    
     state = 2;
     error = e;
   }
@@ -184,6 +184,12 @@ db.data = db.data || {
     } 
   }
 };
+
+db.data.functions.getUdfMetadata.func = getUdfMetadata;
+db.data.functions.terraform.func = terraform;
+db.data.functions.f5xcCreateUserEnv.func = f5xcCreateUserEnv;
+db.data.functions.registerOnPremCe.func = registerOnPremCe;
+db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
 
 
 const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
