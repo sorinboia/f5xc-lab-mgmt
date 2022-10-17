@@ -18,20 +18,4 @@ resource "aws_instance" "microk8s" {
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.sgweb.id]
 
-
-  user_data = <<-EOF
-      #!/bin/bash
-      set -e
-
-      apt-get update -y
-      apt-get upgrade -y
-
-      snap install microk8s --classic
-      microk8s.start
-      microk8s.enable dns ingress
-      usermod -a -G microk8s ubuntu
-
-    EOF
-
-
 }
