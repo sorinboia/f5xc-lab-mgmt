@@ -60,10 +60,10 @@ const terraform = async () => {
   try {
     exec(`aws configure set aws_access_key_id ${awsApiKey}`);
     exec(`aws configure set aws_secret_access_key ${awsApiSecret}`);
-    exec('terraform init');
-    exec('terraform apply --auto-approve');
-    exec('terraform apply --auto-approve');
-    output = JSON.parse(exec('terraform output -json'));    
+    exec('terraform init ../terraform/');
+    exec('terraform apply --auto-approve ../terraform/');
+    exec('terraform apply --auto-approve ../terraform/');
+    output = JSON.parse(exec('terraform output -json ../terraform/'));    
     state = 1;
     db.write();
   } catch (e) {
