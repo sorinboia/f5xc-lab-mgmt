@@ -49,7 +49,7 @@ const getUdfMetadata = async () => {
       db.write();
     } catch (e) {
       state = 2;
-      error = e;
+      error = e.stack || e;
     }
 
     return {state, output, error};    
@@ -58,8 +58,8 @@ const getUdfMetadata = async () => {
 const terraform = async () => {      
   let state = 3, error, output;
   try {
-    exec(`aws configure set aws_access_key_id ${awsApiKey}`);
-    exec(`aws configure set aws_secret_access_key ${awsApiSecret}`);
+    exec(`aws configure set aws_access_key_id ${db.data.udfMetadata.awsApiKey}`);
+    exec(`aws configure set aws_secret_access_key ${db.data.udfMetadata.awsApiSecret}`);
     exec('terraform init ../terraform/');
     exec('terraform apply --auto-approve ../terraform/');
     exec('terraform apply --auto-approve ../terraform/');
@@ -68,7 +68,7 @@ const terraform = async () => {
     db.write();
   } catch (e) {    
     state = 2;
-    error = e;
+    error = e.stack || e;
   }
 
   return {state, output, error};    
@@ -92,7 +92,7 @@ const f5xcCreateUserEnv = async () => {
     state = 1;
   } catch (e) {
     state = 2;
-    error = e;
+    error = e.stack || e;
   }
 
   return {state, output, error};    
@@ -121,7 +121,7 @@ const registerOnPremCe = async () => {
     state = 1;
   } catch (e) {
     state = 2;
-    error = e;
+    error = e.stack || e;
   }
 
   return {state, output, error};    
@@ -139,7 +139,7 @@ const installAwsMicrok8s = async () => {
     state = 1;
   } catch (e) {
     state = 2;
-    error = e;
+    error = e.stack || e;
   }
 
   return {state, output, error};    
