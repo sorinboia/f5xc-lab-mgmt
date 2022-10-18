@@ -10,6 +10,9 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "microk8s" {
   ami           = data.aws_ami.ubuntu.image_id
   instance_type = "t2.large"
+  root_block_device {
+    volume_size = "50"
+  }
 
   associate_public_ip_address = true
   key_name                    = aws_key_pair.aws_key.key_name
