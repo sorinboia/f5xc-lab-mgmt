@@ -158,9 +158,11 @@ const generateHugo = async () => {
   
   try {
     const makeId = db.data.functions.f5xcCreateUserEnv.output.makeId;
-    const udfArcadia = db.data.functions.getUdfMetadata.output.metaDeployment.something;
+    const deployment = db.data.functions.getUdfMetadata.output.metaDeployment.deployment;
+    const udfArcadia = _.find(_.find(deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
 
     exec('rm -rf /home/ubuntu/lab/udf/startup/hugo && git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/udf/startup/hugo/');
+    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::udfarcadia::/${udfArcadia}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::makeid::/${makeId}/g' {} \\;`);
     exec('cd /home/ubuntu/lab/udf/startup/hugo && hugo -D -d /home/ubuntu/hugo');
     
@@ -231,7 +233,7 @@ db.data.functions.installAwsMicrok8s.func = generateHugo;
 
 
 const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
-//const f5xcLabMgmtDomain = 'http://46.117.182.180:52345';
+
 
 const onPremCeIp = '';
 
