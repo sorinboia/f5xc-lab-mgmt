@@ -161,8 +161,8 @@ const generateHugo = async () => {
     const udfArcadia = db.data.functions.getUdfMetadata.output.metaDeployment.something;
 
     exec('git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/startup/hugo');
-    exec(`sed -i 's/\[\[makeid\]\]/${makeId}/g' /home/ubuntu/lab/startup/hugo`);
-    exec('hugo build -c /home/ubuntu/lab/startup/hugo');
+    exec(`sed -i 's/\[\[makeid\]\]/${makeId}/g' /home/ubuntu/lab/startup/hugo/*`);
+    exec('hugo build -c /home/ubuntu/lab/udf/startup/hugo');
     
     
 
