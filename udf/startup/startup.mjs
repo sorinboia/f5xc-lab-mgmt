@@ -162,7 +162,7 @@ const generateHugo = async () => {
 
     exec('rm -rf /home/ubuntu/lab/udf/startup/hugo && git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/udf/startup/hugo/');
     //exec(`sed -i 's/\[\[makeid\]\]/${makeId}/g' /home/ubuntu/lab/udf/startup/hugo/content/*`);
-    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/\[\[makeid\]\]/${makeId}/g' {} \;`);
+    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/\[\[makeid\]\]/${makeId}/g' {} \\;`);
     
     exec('hugo build -c /home/ubuntu/lab/udf/startup/hugo');
     
