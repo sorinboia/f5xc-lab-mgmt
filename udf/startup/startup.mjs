@@ -229,7 +229,7 @@ db.data.functions.terraform.func = terraform;
 db.data.functions.f5xcCreateUserEnv.func = f5xcCreateUserEnv;
 db.data.functions.registerOnPremCe.func = registerOnPremCe;
 db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
-db.data.functions.installAwsMicrok8s.func = generateHugo;
+db.data.functions.generateHugo.func = generateHugo;
 
 
 const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
