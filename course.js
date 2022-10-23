@@ -236,8 +236,11 @@ class Course {
                 
                 axios.head(`https://${udfHost}`,{ validateStatus:  status  => status == 401, timeout: 2000,httpsAgent: new https.Agent({  
                     rejectUnauthorized: false
-                  }) }).catch((e) => {
-                    
+                  }) })
+                  .then(() => {
+                    this.db.data.students[email].failedChecks = 0;
+                  })
+                  .catch((e) => {                    
                     this.db.data.students[email].failedChecks++;
                     if ( this.db.data.students[email].failedChecks >= 5 && this.db.data.students[email].state != 'deleting') {
                         this.db.data.students[email].state = 'deleting';

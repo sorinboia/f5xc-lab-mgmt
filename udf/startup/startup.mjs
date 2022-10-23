@@ -153,6 +153,29 @@ const installAwsMicrok8s = async () => {
   return {state, output, error};    
 }
 
+const generateHugo = async () => {      
+  let state = 3, error, output;
+  
+  try {
+    const makeId = db.data.functions.f5xcCreateUserEnv.output.makeId;
+    const udfArcadia = db.data.functions.getUdfMetadata.output.metaDeployment.something;
+
+    exec('git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/startup/hugo');
+    exec(`sed -i 's/\[\[makeid\]\]/${makeId}/g' /home/ubuntu/lab/startup/hugo`);
+    exec('hugo build -c /home/ubuntu/lab/startup/hugo');
+    
+    
+
+    state = 1;
+  } catch (e) {
+    state = 2;
+    error = e.stack || e;
+  }
+
+  return {state, output, error};    
+} 
+
+
 import { LowSync, JSONFileSync } from 'lowdb';
 const db = new LowSync(new JSONFileSync('./db.json'));
 db.read();
@@ -189,6 +212,12 @@ db.data = db.data || {
       state: 0,
       key: 'installAwsMicrok8s',
       func: installAwsMicrok8s             
+    },
+    generateHugo: {
+      order: 6,
+      state: 0,
+      key: 'generateHugo',
+      func: generateHugo             
     } 
   }
 };
@@ -198,6 +227,7 @@ db.data.functions.terraform.func = terraform;
 db.data.functions.f5xcCreateUserEnv.func = f5xcCreateUserEnv;
 db.data.functions.registerOnPremCe.func = registerOnPremCe;
 db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
+db.data.functions.installAwsMicrok8s.func = generateHugo;
 
 
 const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
