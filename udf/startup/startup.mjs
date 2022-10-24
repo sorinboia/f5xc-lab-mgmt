@@ -160,12 +160,16 @@ const generateHugo = async () => {
     const makeId = db.data.functions.f5xcCreateUserEnv.output.makeId;
     const deployment = db.data.functions.getUdfMetadata.output.metaDeployment.deployment;
     const udfArcadia = _.find(_.find(deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
-
+    const ceOnPrem = db.data.functions.f5xcCreateUserEnv.output.createdNames.ceOnPrem.clusterName
+    
     exec('rm -rf /home/ubuntu/lab/udf/startup/hugo && git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/udf/startup/hugo/');
+    
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::udfarcadia::/${udfArcadia}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::makeid::/${makeId}/g' {} \\;`);
-    exec('cd /home/ubuntu/lab/udf/startup/hugo && hugo -D -d /home/ubuntu/hugo');
+    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::ceOnPrem::/${ceOnPrem}/g' {} \\;`);
     
+    
+    exec('cd /home/ubuntu/lab/udf/startup/hugo && hugo -D -d /home/ubuntu/hugo');
     
 
     state = 1;
