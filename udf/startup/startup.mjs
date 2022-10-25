@@ -199,13 +199,14 @@ const awsCeLbRecordUpdate = async () => {
           type    = \\"A\\"
           ttl     = 300
           records = [\\"${cmdResult}\\"]
-        }\\" > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
+        }" > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
         exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
+        state = 1;
         clearInterval(checker);
       }
     },60000); 
 
-    state = 1;
+    
   } catch (e) {
     state = 2;
     error = e.stack || e;
