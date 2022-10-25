@@ -183,6 +183,37 @@ const generateHugo = async () => {
   return {state, output, error};    
 } 
 
+const awsCeLbRecordUpdate = async () => {      
+  let state = 3, error, output;
+  
+  try {
+   
+    
+    const checker = setInterval(() => {
+      const cmdResult = exec('aws elbv2 describe-load-balancers | jq -r .LoadBalancers[0].DNSName').toString();
+
+      if (cmdResult != null) {
+        exec(`resource "aws_route53_record" "www" {
+          zone_id = aws_route53_zone.private.zone_id
+          name    = "www.aws.internal"
+          type    = "A"
+          ttl     = 300
+          records = ["${cmdResult}"]
+        } > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
+        clearInterval(checker);
+      }
+    },60000); 
+
+    state = 1;
+  } catch (e) {
+    state = 2;
+    error = e.stack || e;
+  }
+
+  return {state, output, error};    
+}
+
 
 import { LowSync, JSONFileSync } from 'lowdb';
 const db = new LowSync(new JSONFileSync('./db.json'));
@@ -226,7 +257,13 @@ db.data = db.data || {
       state: 0,
       key: 'generateHugo',
       func: generateHugo             
-    } 
+    },
+    awsCeLbRecordUpdate: {
+      order: 7,
+      state: 0,
+      key: 'awsCeLbRecordUpdate',
+      func: awsCeLbRecordUpdate             
+    }     
   }
 };
 
@@ -235,6 +272,7 @@ db.data.functions.terraform.func = terraform;
 db.data.functions.f5xcCreateUserEnv.func = f5xcCreateUserEnv;
 db.data.functions.registerOnPremCe.func = registerOnPremCe;
 db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
+db.data.functions.generateHugo.func = generateHugo;
 db.data.functions.generateHugo.func = generateHugo;
 
 
