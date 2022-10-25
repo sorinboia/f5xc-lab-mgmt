@@ -190,7 +190,7 @@ const awsCeLbRecordUpdate = async () => {
    
     
     const checker = setInterval(() => {
-      const cmdResult = exec('aws elbv2 describe-load-balancers | jq -r .LoadBalancers[0].DNSName').toString();
+      const cmdResult = exec('aws elbv2 describe-load-balancers | jq -rj .LoadBalancers[0].DNSName').toString();
       logger.info(`cmdResult ${cmdResult}`);
       if (cmdResult != null) {
         exec(`echo "resource \\"aws_route53_record\\" \\"www\\" {
