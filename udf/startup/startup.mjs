@@ -196,7 +196,7 @@ const awsCeLbRecordUpdate = async () => {
         exec(`echo "resource \\"aws_route53_record\\" \\"www\\" {
           zone_id = aws_route53_zone.private.zone_id
           name    = \\"www.aws.internal\\"
-          type    = \\"A\\"
+          type    = \\"CNAME\\"
           ttl     = 300
           records = [\\"${cmdResult}\\"]
         }" > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
