@@ -193,13 +193,13 @@ const awsCeLbRecordUpdate = async () => {
       const cmdResult = exec('aws elbv2 describe-load-balancers | jq -r .LoadBalancers[0].DNSName').toString();
 
       if (cmdResult != null) {
-        exec(`resource "aws_route53_record" "www" {
+        exec(`echo "resource \\"aws_route53_record\\" \\"www\\" {
           zone_id = aws_route53_zone.private.zone_id
-          name    = "www.aws.internal"
-          type    = "A"
+          name    = \\"www.aws.internal\\"
+          type    = \\"A\\"
           ttl     = 300
-          records = ["${cmdResult}"]
-        } > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
+          records = [\\"${cmdResult}\\"]
+        }\\" > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
         exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
         clearInterval(checker);
       }
