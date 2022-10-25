@@ -273,7 +273,7 @@ db.data.functions.f5xcCreateUserEnv.func = f5xcCreateUserEnv;
 db.data.functions.registerOnPremCe.func = registerOnPremCe;
 db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
 db.data.functions.generateHugo.func = generateHugo;
-db.data.functions.generateHugo.func = generateHugo;
+db.data.functions.awsCeLbRecordUpdate.func = awsCeLbRecordUpdate;
 
 
 const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
