@@ -193,9 +193,9 @@ const awsCeLbRecordUpdate = async () => {
       const cmdResult = exec('aws elbv2 describe-load-balancers | jq -rj .LoadBalancers[0].DNSName').toString();
       logger.info(`cmdResult ${cmdResult}`);
       if (cmdResult != null) {
-        exec(`echo "resource \\"aws_route53_record\\" \\"www\\" {
+        exec(`echo "resource \\"aws_route53_record\\" \\"arcadiaonprem\\" {
           zone_id = aws_route53_zone.private.zone_id
-          name    = \\"www.aws.internal\\"
+          name    = \\"arcadiaonprem.aws.internal\\"
           type    = \\"CNAME\\"
           ttl     = 300
           records = [\\"${cmdResult}\\"]
