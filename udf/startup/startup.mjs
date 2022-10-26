@@ -186,7 +186,7 @@ const generateHugo = async () => {
 
 const awsCeLbRecordUpdate =  () => {      
   
-  return new Promise(() => {
+  return new Promise((resolve,reject) => {
     let state = 3, error, output;
     try {
    
