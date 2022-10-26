@@ -11,5 +11,5 @@ resource "aws_route53_record" "arcadia" {
   name    = "arcadiaaws.aws.internal"
   type    = "A"
   ttl     = 300
-  records = [aws_instance.microk8s.ip]
+  records = [aws_instance.microk8s.private_ip]
 }
