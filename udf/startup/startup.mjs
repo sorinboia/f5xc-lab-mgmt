@@ -2,7 +2,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 import axios from 'axios';
 import { execSync } from 'child_process';
-import _, { reject } from 'lodash';
+import _ from 'lodash';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
