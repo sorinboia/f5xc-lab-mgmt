@@ -2,7 +2,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 import axios from 'axios';
 import { execSync } from 'child_process';
-import _ from 'lodash';
+import _, { reject } from 'lodash';
 import pino from 'pino';
 import pretty from 'pino-pretty';
 
@@ -137,7 +137,7 @@ const installAwsMicrok8s = async () => {
           'sudo apt-get upgrade -y && ' +
           'sudo snap install microk8s --classic && ' +
           'sudo microk8s.start && ' +
-          'sudo microk8s.enable dns ingress && ' +
+          'export dnss=$(cat /run/systemd/resolve/resolv.conf | grep nameserver | cut -d \' \' -f2) && sudo microk8s.enable ingress dns:$dnss && ' +
           'sudo usermod -a -G microk8s ubuntu"');
     exec(`ssh -o "StrictHostKeyChecking no" -i ~/.ssh/aws.key ubuntu@${tfOutput.microk8s_ip.value} "microk8s config" > ~/.kube/config`);
     exec(`sed -i 's/certificate-authority-data.*//g' ~/.kube/config`);
@@ -162,6 +162,7 @@ const generateHugo = async () => {
     const udfArcadia = _.find(_.find(deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
     const ceOnPrem = db.data.functions.f5xcCreateUserEnv.output.createdNames.ceOnPrem.clusterName;
     const acradiaCe = _.find(_.find(deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
+    const ceOnAws = db.data.functions.f5xcCreateUserEnv.output.createdNames.awsSiteName;
 
     exec('rm -rf /home/ubuntu/lab/udf/startup/hugo && git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/udf/startup/hugo/');
     
@@ -169,7 +170,7 @@ const generateHugo = async () => {
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::makeid::/${makeId}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::ceOnPrem::/${ceOnPrem}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::acradiaCe::/${acradiaCe}/g' {} \\;`);
-    
+    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::ceOnAws::/${ceOnAws}/g' {} \\;`);
     
     exec('cd /home/ubuntu/lab/udf/startup/hugo && hugo -D -d /home/ubuntu/hugo');
     
@@ -183,36 +184,39 @@ const generateHugo = async () => {
   return {state, output, error};    
 } 
 
-const awsCeLbRecordUpdate = async () => {      
-  let state = 3, error, output;
+const awsCeLbRecordUpdate =  () => {      
   
-  try {
+  return new Promise(() => {
+    let state = 3, error, output;
+    try {
    
     
-    const checker = setInterval(() => {
-      const cmdResult = exec('aws elbv2 describe-load-balancers | jq -rj .LoadBalancers[0].DNSName').toString();
-      logger.info(`cmdResult ${cmdResult}`);
-      if (cmdResult != null) {
-        exec(`echo "resource \\"aws_route53_record\\" \\"arcadiaonprem\\" {
-          zone_id = aws_route53_zone.private.zone_id
-          name    = \\"arcadiaonprem.aws.internal\\"
-          type    = \\"CNAME\\"
-          ttl     = 300
-          records = [\\"${cmdResult}\\"]
-        }" > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
-        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
-        state = 1;
-        clearInterval(checker);
-      }
-    },60000); 
-
+      const checker = setInterval(() => {
+        const cmdResult = exec('aws elbv2 describe-load-balancers | jq -rj .LoadBalancers[0].DNSName').toString();
+        logger.info(`cmdResult ${cmdResult}`);
+        if (cmdResult != null) {
+          exec(`echo "resource \\"aws_route53_record\\" \\"arcadiaonprem\\" {
+            zone_id = aws_route53_zone.private.zone_id
+            name    = \\"arcadiaonprem.aws.internal\\"
+            type    = \\"CNAME\\"
+            ttl     = 300
+            records = [\\"${cmdResult}\\"]
+          }" > /home/ubuntu/lab/udf/terraform/dns_records.tf`);
+          exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
+          state = 1;
+          resolve({state, output, error})
+          clearInterval(checker);
+        }
+      },60000); 
+  
+      
+    } catch (e) {
+      state = 2;
+      error = e.stack || e;
+      reject({state, output, error});
+    }
     
-  } catch (e) {
-    state = 2;
-    error = e.stack || e;
-  }
-
-  return {state, output, error};    
+  });  
 }
 
 
@@ -288,6 +292,7 @@ const main = async  () => {
     for (let i=0; i < tasks.length; i++) {
       const { func, key, state} = tasks[i];
       if (state != 1) {
+        log.info(`RUNNING ${key}`);
         const result = await func();
         db.data.functions[key].state = result.state;
         db.data.functions[key].output = result.output;

@@ -180,6 +180,11 @@ spec:
         - name: arcadia-stock-transaction
           image: sorinboiaf5/arcadia-stock_transaction:v0.1
           imagePullPolicy: Always
+          env:
+            - name: LOGINAPIHOST
+              value: arcadiaonprem.aws.internal
+            - name: USERSAPIHOST
+              value: arcadiaonprem.aws.internal
           ports:
             - containerPort: 80
 

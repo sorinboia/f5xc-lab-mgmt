@@ -5,15 +5,6 @@ resource "aws_vpc" "main" {
     Name = "f5xc experience"
   }
 }
-
-resource "aws_route53_zone" "private" {
-  name = "aws.internal"
-
-  vpc {
-    vpc_id = aws_vpc.main.id
-  }
-}
-
 resource "aws_subnet" "management-subnet" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.management_subnet_cidr
