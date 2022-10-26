@@ -292,7 +292,7 @@ const main = async  () => {
     for (let i=0; i < tasks.length; i++) {
       const { func, key, state} = tasks[i];
       if (state != 1) {
-        log.info(`RUNNING ${key}`);
+        logger.info(`RUNNING ${key}`);
         const result = await func();
         db.data.functions[key].state = result.state;
         db.data.functions[key].output = result.output;
