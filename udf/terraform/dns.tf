@@ -6,7 +6,7 @@ resource "aws_route53_zone" "private" {
   }
 }
 
-resource "aws_route53_record\\" "arcadia" {
+resource "aws_route53_record" "arcadia" {
   zone_id = aws_route53_zone.private.zone_id
   name    = "arcadiaaws.aws.internal"
   type    = "A"
