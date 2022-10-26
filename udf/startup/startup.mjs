@@ -137,7 +137,7 @@ const installAwsMicrok8s = async () => {
           'sudo apt-get upgrade -y && ' +
           'sudo snap install microk8s --classic && ' +
           'sudo microk8s.start && ' +
-          'export dnss=$(cat /run/systemd/resolve/resolv.conf | grep nameserver | cut -d \' \' -f2) && sudo microk8s.enable ingress dns:$dnss && ' +
+          'export ddns=$(echo -n $(cat /run/systemd/resolve/resolv.conf | grep nameserver | cut -d \' \' -f2)) && sudo microk8s.enable dns:$dnss && ' +
           'sudo usermod -a -G microk8s ubuntu"');
     exec(`ssh -o "StrictHostKeyChecking no" -i ~/.ssh/aws.key ubuntu@${tfOutput.microk8s_ip.value} "microk8s config" > ~/.kube/config`);
     exec(`sed -i 's/certificate-authority-data.*//g' ~/.kube/config`);
