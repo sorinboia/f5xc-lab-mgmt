@@ -3,53 +3,6 @@ apiVersion: v1
 metadata:
   name: arcadiacrypto
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: arcadia-ingress
-  namespace: arcadiacrypto
-spec:
-  rules:
-  - host: arcadiacrypto.udf
-    http:
-      paths:
-      - path: /v1/user
-        pathType: Prefix
-        backend:
-          service:
-            name: arcadia-users
-            port:
-              number: 80
-      - path: /v1/login
-        pathType: Prefix
-        backend:
-          service:
-            name: arcadia-login
-            port:
-              number: 80
-      - path: /v1/stock
-        pathType: Prefix
-        backend:
-          service:
-            name: arcadia-stocks
-            port:
-              number: 80
-      - path: /v1/stockt
-        pathType: Prefix
-        backend:
-          service:
-            name: arcadia-stock-transaction
-            port:
-              number: 80
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: arcadia-frontend
-            port:
-              number: 80
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
