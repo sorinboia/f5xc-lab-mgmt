@@ -164,6 +164,7 @@ const generateHugo = async () => {
     const ceOnPrem = db.data.functions.f5xcCreateUserEnv.output.createdNames.ceOnPrem.clusterName;
     const acradiaCe = _.find(_.find(deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
     const ceOnAws = db.data.functions.f5xcCreateUserEnv.output.createdNames.awsSiteName;
+    const namespace = db.data.functions.f5xcCreateUserEnv.output.createdNames.namespace;
 
     exec('rm -rf /home/ubuntu/lab/udf/startup/hugo && git clone https://github.com/sorinboia/hugo-f5xc-experience.git /home/ubuntu/lab/udf/startup/hugo/');
     
@@ -172,6 +173,7 @@ const generateHugo = async () => {
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::ceOnPrem::/${ceOnPrem}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::acradiaCe::/${acradiaCe}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::ceOnAws::/${ceOnAws}/g' {} \\;`);
+    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::namespace::/${namespace}/g' {} \\;`);
     
     exec('cd /home/ubuntu/lab/udf/startup/hugo && hugo -D -d /home/ubuntu/hugo');
     
