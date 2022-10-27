@@ -45,8 +45,9 @@ const createNames = (email) => {
         clusterName: 'ceop-' + id,
         hostname: 'ceophost' + id
     }
+    const vk8sName = 'vk8s-' + id;
     
-    return { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem};
+    return { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName};
 }
 
 
@@ -64,7 +65,7 @@ class Course {
         if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
         this.log[email] = log;        
         const createdNames = createNames(email);
-        const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem } = createdNames;
+        const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
         
         
         let err;
@@ -100,7 +101,14 @@ class Course {
                     err = {operation:'createAwsVpcSite',...e};                
                 });
             }
+
             
+            if (!err) {
+                await this.f5xc.createvK8s( { name: vk8sName, namespace }).catch((e) =>  {                     
+                    log.warn({operation:'createvK8s',...e}); 
+                    err = {operation:'createvK8s',...e};                
+                });
+            }
 
             if (!err) {
                 this.db.data.students[email] = { email, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
@@ -109,10 +117,8 @@ class Course {
                 log.info('Student created');
                 return this.db.data.students[email];
             } else {
-                log.warn('Student creation failed, reverting config');
-                
-                await this.deleteStudent({createdNames, log})
-
+                log.warn('Student creation failed');
+                                
                 return err;
             }
                     

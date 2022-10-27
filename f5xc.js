@@ -214,6 +214,21 @@ class F5xc {
         });
         return data; 
     }
+
+    async createvK8s ({name, namespace}) {        
+        const endPoint = `/api/config/namespaces/${namespace}/virtual_k8ss`;
+        const data = {
+            metadata: {
+              name,
+              namespace
+            },
+            spec: {
+                
+            }
+          }
+                
+        await this.axios.post(endPoint,data);
+    }
 }
 
 
