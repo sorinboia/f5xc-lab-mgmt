@@ -227,7 +227,7 @@ const runBot = async () => {
   let state = 3, error, output;
   
   try {
-    const makeId = db.data.functions.f5xcCreateUserEnv.output.makeId;
+    const makeid = db.data.functions.f5xcCreateUserEnv.output.makeId;
     
     exec(`docker run -d -e TARGETURL=https://${makeid}.sales-public.f5demos.com/ sorinboiaf5/arcadia-bot:latest`);
 
