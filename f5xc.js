@@ -222,9 +222,7 @@ class F5xc {
               name,
               namespace
             },
-            spec: {
-                
-            }
+            spec: {}
           }
                 
         await this.axios.post(endPoint,data);

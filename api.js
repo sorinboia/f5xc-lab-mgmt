@@ -3,8 +3,7 @@ const fastify = Fastify({
     logger: {
         transport: {
           target: 'pino-pretty',
-          options: {
-            colorize: true,
+          options: {            
             ignore: 'pid,hostname,reqId',
             singleLine: true,
             messageFormat: '{reqId} {msg}',

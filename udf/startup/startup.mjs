@@ -80,7 +80,6 @@ const f5xcCreateUserEnv = async () => {
     const udfMetadata = db.data.udfMetadata;
     const tfOutput = db.data.functions.terraform.output;
     const dataToPost = { 
-      email: 'sorinboia@gmail.com', 
       ...udfMetadata,
       awsAz: tfOutput.az.value,
       awsRegion: tfOutput.region.value,
@@ -136,8 +135,7 @@ const installAwsMicrok8s = async () => {
           '"sudo apt-get update -y && ' +
           'sudo apt-get upgrade -y && ' +
           'sudo snap install microk8s --classic && ' +
-          'sudo microk8s.start && ' +
-          //'export ddns=$(echo -n $(cat /run/systemd/resolve/resolv.conf | grep nameserver | cut -d \' \' -f2)) && sudo microk8s.enable dns:$dnss && ' +
+          'sudo microk8s.start && ' +          
           'sudo microk8s.enable dns:10.0.0.2 && ' +
           'sudo microk8s.enable ingress &&' +
           'sudo usermod -a -G microk8s ubuntu"');
