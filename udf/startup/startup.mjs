@@ -252,50 +252,42 @@ db.data = db.data || {
     getUdfMetadata: {
         order: 1,
         state: 0,
-        key: 'getUdfMetadata',
-        func: getUdfMetadata        
+        key: 'getUdfMetadata'
     },
     terraform: {
       order: 2,
       state: 0,
-      key: 'terraform',
-      func: terraform        
+      key: 'terraform'     
     },
     f5xcCreateUserEnv: {
       order: 3,
       state: 0,
-      key: 'f5xcCreateUserEnv',
-      func: f5xcCreateUserEnv        
+      key: 'f5xcCreateUserEnv'      
     },
     registerOnPremCe: {
       order: 4,
       state: 0,
-      key: 'registerOnPremCe',
-      func: registerOnPremCe             
+      key: 'registerOnPremCe'           
     },
     installAwsMicrok8s: {
       order: 5,
       state: 0,
-      key: 'installAwsMicrok8s',
-      func: installAwsMicrok8s             
+      key: 'installAwsMicrok8s'          
     },
     generateHugo: {
       order: 6,
       state: 0,
-      key: 'generateHugo',
-      func: generateHugo             
+      key: 'generateHugo'         
     },
     awsCeLbRecordUpdate: {
       order: 7,
       state: 0,
-      key: 'awsCeLbRecordUpdate',
-      func: awsCeLbRecordUpdate             
+      key: 'awsCeLbRecordUpdate'          
     },
     runBot: {
       order: 8,
       state: 0,
-      key: 'runBot',
-      func: runBot             
+      key: 'runBot'          
     }       
   }
 };
