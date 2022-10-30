@@ -223,6 +223,24 @@ const awsCeLbRecordUpdate =  () => {
   });  
 }
 
+const runBot = async () => {      
+  let state = 3, error, output;
+  
+  try {
+    const makeId = db.data.functions.f5xcCreateUserEnv.output.makeId;
+    
+    exec(`docker run -d -e TARGETURL=https://${makeid}.sales-public.f5demos.com/ sorinboiaf5/arcadia-bot:latest`);
+
+    state = 1;
+  } catch (e) {
+    state = 2;
+    error = e.stack || e;
+  }
+
+  return {state, output, error};    
+} 
+
+
 
 import { LowSync, JSONFileSync } from 'lowdb';
 const db = new LowSync(new JSONFileSync('./db.json'));
@@ -272,7 +290,13 @@ db.data = db.data || {
       state: 0,
       key: 'awsCeLbRecordUpdate',
       func: awsCeLbRecordUpdate             
-    }     
+    },
+    runBot: {
+      order: 8,
+      state: 0,
+      key: 'runBot',
+      func: runBot             
+    }       
   }
 };
 
@@ -283,12 +307,11 @@ db.data.functions.registerOnPremCe.func = registerOnPremCe;
 db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
 db.data.functions.generateHugo.func = generateHugo;
 db.data.functions.awsCeLbRecordUpdate.func = awsCeLbRecordUpdate;
+db.data.functions.runBot.func = runBot;
 
 
 const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
 
-
-const onPremCeIp = '';
 
 const main = async  () => {
 
