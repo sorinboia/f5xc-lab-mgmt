@@ -34,10 +34,11 @@ const makeid = (length) => {
 
 
 const createNames = (email) => {
-    const makeId = makeid(6);
+    const makeId = makeid(8);
     const lowerEmail = email.toLowerCase();
-    const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'') + '-' + makeId;
-    const id = lowerEmail.replace(/[^a-zA-Z0-9]/g, "").split("@")[0] + '-' + randomPart;
+    const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'').slice(4) + '-' + makeId;
+    //const id = lowerEmail.replace(/[^a-zA-Z0-9]/g, "").split("@")[0] + '-' + randomPart;
+    const id = randomPart;
     const namespace = 'ns-' + id;
     const ccName = 'cc-' + id;
     const awsSiteName = 'as-' + id;
