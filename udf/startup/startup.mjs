@@ -88,7 +88,12 @@ const f5xcCreateUserEnv = async () => {
     };
             
     output = (await axios.post(`${f5xcLabMgmtDomain}/v1/student`,dataToPost)).data;
-    state = 1;
+    if (output.code == 6) {
+      state = 2;
+    } else {
+      state = 1;
+    }
+    
   } catch (e) {
     state = 2;
     error = e.stack || e;
