@@ -40,6 +40,23 @@ class F5xc {
         await this.axios.post(endPoint,data);
     }
 
+
+    async assignNs(email, nsName) {        
+        const endPoint = '/api/web/custom/namespaces/system/role_users';
+        const data = {
+            "namespace": "system",
+            "namespaces_role": {
+              "namespaces": [ nsName ],
+              "role": "ves-io-admin-role"
+            },
+            "username": [ email ]
+          }
+
+        await this.axios.post(endPoint,data);        
+    }
+
+
+        
     async deleteNS(nsName) {
         const endPoint = `/api/web/namespaces/${nsName}/cascade_delete`;
 
@@ -49,6 +66,7 @@ class F5xc {
         
         await this.axios.post(endPoint,data);
     }
+
 
     async createUser(email,nsName) {
         const endPoint = '/api/web/custom/namespaces/system/user_roles';

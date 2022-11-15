@@ -4,6 +4,7 @@ import dns from 'node:dns';
 import axios from 'axios';
 import https from 'https';
 import { log as fastifyLog } from './api.js'
+import crypto from 'crypto';
 
 
 
@@ -19,15 +20,18 @@ const validateStudent = async ({udfHost,ip}) => {
     return true || result.address == ip; 
 }
 
-
+const generateHash = (arr) => {
+    let hash = crypto.createHash('md5');    
+    hash.update(arr.join(''));    
+    return hash.digest('hex');
+}
 
 const makeid = (length) => {
     let result           = '';
     const characters       = 'abcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     for ( let i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * 
- charactersLength));
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
    }
    return result;
 }
@@ -37,7 +41,6 @@ const createNames = (email) => {
     const makeId = makeid(8);
     const lowerEmail = email.toLowerCase();
     const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'').slice(4) + '-' + makeId;
-    //const id = lowerEmail.replace(/[^a-zA-Z0-9]/g, "").split("@")[0] + '-' + randomPart;
     const id = randomPart;
     const namespace = 'ns-' + id;
     const ccName = 'cc-' + id;
@@ -62,12 +65,12 @@ class Course {
         this.periodicChecks();                
     }
 
-    async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {
-        if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
-        this.log[email] = log;        
+    async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
         const createdNames = createNames(email);
         const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
-        
+        const hash = generateHash([lowerEmail,makeId]);
+        this.log[hash] = log;
+        let userExisted = false;
         
         let err;
 
@@ -83,9 +86,19 @@ class Course {
                 err = {operation:'createNS',...e};                
             });
             
-            if (!err) await this.f5xc.createUser(lowerEmail,namespace).catch((e) => { 
-                log.warn({operation:'createUser',...e});
-                err = {operation:'createUser',...e};   
+            if (!err) await this.f5xc.createUser(lowerEmail,namespace).catch(async (e) => {                 
+                if (e.message.indexOf('user with email already exist') > -1) {
+                    userExisted = true;                    
+                    await this.f5xc.assignNs(email,namespace).catch((e) =>  {                         
+                        log.warn({operation:'assignNs',...e}); 
+                        err = {operation:'assignNs',...e};                
+                    });
+
+                } else {
+                    log.warn({operation:'createUser',...e});
+                    err = {operation:'createUser',...e};   
+                }
+                
             });            
             
                         
@@ -112,11 +125,11 @@ class Course {
             }
 
             if (!err) {
-                this.db.data.students[email] = { email, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
+                this.db.data.students[hash] = { email, userExisted, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
                 this.db.write();
                 log.info('Student created');
-                return this.db.data.students[email];
+                return this.db.data.students[hash];
             } else {
                 log.warn('Student creation failed');
                                 
@@ -133,12 +146,13 @@ class Course {
         
     }
 
-    async deleteStudent({ email, createdNames, log }) {
+    async deleteStudent({ hash, createdNames, log }) {
         let studentCreatedNames;
-        if (email) studentCreatedNames = this.db.data.students[email].createdNames; 
+        if (hash) studentCreatedNames = this.db.data.students[hash].createdNames; 
 
-        const { lowerEmail, namespace, ccName, awsSiteName, ceOnPrem} =  studentCreatedNames || createdNames;
-
+        const { lowerEmail, namespace, ccName, awsSiteName, ceOnPrem, makeId} =  studentCreatedNames || createdNames;
+        hash = hash || generateHash([lowerEmail, makeId]);
+        const userExisted = this.db.data.students[hash];
         
        
         await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
@@ -149,9 +163,14 @@ class Course {
             log.warn({operation:'deleteCloudCredentials',...e});             
         });
 
-        await this.f5xc.deleteUser(lowerEmail).catch((e) =>  { 
-            log.warn({operation:'deleteUser',...e});             
-        });
+        if (userExisted) {
+            log.warn('User existed, not deleting');
+        } else {
+            await this.f5xc.deleteUser(lowerEmail).catch((e) =>  { 
+                log.warn({operation:'deleteUser',...e});             
+            });
+        }
+
         await this.f5xc.deleteNS(namespace).catch((e) =>  { 
             log.warn({operation:'deleteNS',...e});             
         });
@@ -160,12 +179,12 @@ class Course {
             log.warn({operation:'deleteSite',...e});             
         });
                 
-        if (this.db.data.students[email]) {
-            log.info(email + ' is being deleted');
+        if (this.db.data.students[hash]) {
+            log.info(`${lowerEmail} with ${makeId} is being deleted`);
             setTimeout(() => {
-                delete this.db.data.students[email];
+                delete this.db.data.students[hash];
                 this.db.write();
-                log.info(email + ' was deleted');  
+                log.info(lowerEmail + ' was deleted');  
             }, 240000);
         }        
     }
@@ -178,8 +197,8 @@ class Course {
 
     checkCeReg() {
         setInterval(async (x) => {
-            for (const [email,student] of Object.entries(this.db.data.students)) {                
-                const log = this.log[email] || fastifyLog;
+            for (const [hash,student] of Object.entries(this.db.data.students)) {                
+                const log = this.log[hash] || fastifyLog;
                 
                 const { state, clusterName } = student.ceRegistration;
                                 
@@ -190,8 +209,8 @@ class Course {
                         const regPassport = siteData.items[0].object.spec.gc_spec.passport;
                         const approvalState = await this.f5xc.registrationApprove({name:regName, passport:regPassport })
                         log.info('CE on prem Approved');                    
-                        this.db.data.students[email].ceRegistration.name = regName;
-                        this.db.data.students[email].ceRegistration.state = 'APPROVED';
+                        this.db.data.students[hash].ceRegistration.name = regName;
+                        this.db.data.students[hash].ceRegistration.state = 'APPROVED';
                         this.db.write();
                     }
                     
@@ -203,9 +222,9 @@ class Course {
     checkF5xcTf() {
         // Will need to do some refactoring on this later
         setInterval(async (x) => {
-            for (const [email,student] of Object.entries(this.db.data.students)) {                
-                const log = this.log[email] || fastifyLog;
-                const { f5xcTf, state } = student;
+            for (const [hash,student] of Object.entries(this.db.data.students)) {                
+                const log = this.log[hash] || fastifyLog;
+                const { f5xcTf, state,email } = student;
                 const { awsSiteName } = student.createdNames;
                 
                 if (student.f5xcTf.awsVpcSite !== 'APPLIED' || state == 'deleting') {
@@ -218,7 +237,7 @@ class Course {
                     const  {apply_state, error_output } = res.status.apply_status;
                 
                     if (apply_state) {                        
-                        this.db.data.students[email].f5xcTf.awsVpcSite = apply_state;
+                        this.db.data.students[hash].f5xcTf.awsVpcSite = apply_state;
                         this.db.write();
                     }
                                                             
@@ -237,21 +256,21 @@ class Course {
 
     deleteInactiveStudents() {                                    
         setInterval((x) => {
-            for (const [email,student] of Object.entries(this.db.data.students)) {                
-                const log = this.log[email] || fastifyLog;
+            for (const [hash,student] of Object.entries(this.db.data.students)) {                
+                const log = this.log[hash] || fastifyLog;
                 const { udfHost } = student;
                 
                 axios.head(`https://${udfHost}`,{ validateStatus:  status  => status == 401, timeout: 2000,httpsAgent: new https.Agent({  
                     rejectUnauthorized: false
                   }) })
                   .then(() => {
-                    this.db.data.students[email].failedChecks = 0;
+                    this.db.data.students[hash].failedChecks = 0;
                   })
                   .catch((e) => {                    
-                    this.db.data.students[email].failedChecks++;
-                    if ( this.db.data.students[email].failedChecks >= 5 && this.db.data.students[email].state != 'deleting') {
-                        this.db.data.students[email].state = 'deleting';
-                        this.deleteStudent({ email, log }).catch((e) =>  { 
+                    this.db.data.students[hash].failedChecks++;
+                    if ( this.db.data.students[hash].failedChecks >= 5 && this.db.data.students[hash].state != 'deleting') {
+                        this.db.data.students[hash].state = 'deleting';
+                        this.deleteStudent({ hash, log }).catch((e) =>  { 
                             log.warn({operation:'deleteInactiveStudents',...e});                             
                         });
                         
