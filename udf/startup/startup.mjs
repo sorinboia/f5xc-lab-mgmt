@@ -311,7 +311,7 @@ const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
 
 
 const main = async  () => {
-
+    exec('rm /home/ubuntu/startup/error');
     const tasks = _.orderBy(db.data.functions,['order'],['asc']);
     for (let i=0; i < tasks.length; i++) {
       const { func, key, state} = tasks[i];
@@ -322,7 +322,10 @@ const main = async  () => {
         db.data.functions[key].output = result.output;
         db.data.functions[key].error = result.error;
         db.write();
-        if (result.state != 1 ) break;
+        if (result.state != 1 ) {
+          exec('touch /home/ubuntu/startup/error')
+          break;
+        }
       }          
     }
 }

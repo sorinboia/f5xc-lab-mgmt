@@ -66,6 +66,7 @@ class Course {
     }
 
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
+        if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
         const createdNames = createNames(email);
         const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
         const hash = generateHash([lowerEmail,makeId]);
