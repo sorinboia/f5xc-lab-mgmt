@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 class F5xc {
     constructor(domain,key) {
@@ -9,6 +10,16 @@ class F5xc {
                 'Content-Type': 'application/json'
             }
         });
+
+        axiosRetry (this.axios, {
+            retries: 5,
+            retryDelay: (retryCount) => {                
+                return retryCount * 10000; 
+            },
+            retryCondition: (error) => {                
+                return error.response.status >= 400;
+            },
+        })
     
         this.axios.interceptors.request.use(function (config) {                        
             return config;
