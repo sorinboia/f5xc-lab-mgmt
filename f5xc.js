@@ -219,7 +219,11 @@ class F5xc {
     async getAwsVpcSite({name}) {
        
         const endPoint = `/api/config/namespaces/system/terraform_parameters/aws_vpc_site/${name}/status`        
-        const { data } = await this.axios.get(endPoint);
+        const { data } = await this.axios.get(endPoint,{
+            'axios-retry': {
+                retries: 0
+            }
+        });
         return data; 
     }
 
