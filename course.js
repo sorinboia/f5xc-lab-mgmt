@@ -71,7 +71,7 @@ class Course {
         const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
         const hash = generateHash([lowerEmail,makeId]);
         this.log[hash] = log;
-        let userExisted = 0;
+        let userExisted = 'no';
         
         let err;
 
@@ -89,7 +89,7 @@ class Course {
             
             if (!err) await this.f5xc.createUser(lowerEmail,namespace).catch(async (e) => {                 
                 if (e.message.indexOf('user with email already exist') > -1) {
-                    userExisted = 1;                    
+                    userExisted = 'yes';                    
                     await this.f5xc.assignNs(email,namespace).catch((e) =>  {                         
                         log.warn({operation:'assignNs',...e}); 
                         err = {operation:'assignNs',...e};                
@@ -164,7 +164,7 @@ class Course {
             log.warn({operation:'deleteCloudCredentials',...e});             
         });
 
-        if (userExisted) {
+        if (userExisted == 'yes') {
             log.warn('User existed, not deleting');
         } else {
             await this.f5xc.deleteUser(lowerEmail).catch((e) =>  { 
