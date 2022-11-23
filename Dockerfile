@@ -13,7 +13,7 @@ COPY . .
 # RUN npm ci --only=production
 
 # Bundle app source
-COPY . .
+COPY ./modifiedNpms/axios-retry/lib/esm/index.js ./node_modules/axios-retry/lib/esm/index.js
 
 EXPOSE 8080
 CMD ["sh","-c", "node index.js"]
