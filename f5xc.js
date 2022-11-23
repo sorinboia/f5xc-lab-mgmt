@@ -21,6 +21,7 @@ class F5xc {
             },
         })
     
+        /*
         this.axios.interceptors.request.use(function (config) {                        
             return config;
             }, function (error) {            
@@ -32,6 +33,7 @@ class F5xc {
             }, function (error) {                   
                 return Promise.reject({ status: error.response.status, statusText: error.response.statusText, ...error.response.data });
         });    
+        */
     }
 
     async createNS(nsName) {
