@@ -1,5 +1,10 @@
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
+
+import axiosRetry from 'axios-retry'; 
+// Source code has been edited to return reject as Promise.reject({ status: error.response.status, statusText: error.response.statusText, ...error.response.data });
+// In file /node_modules/axios-retry/lib/esm/index.js
+
+
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 class F5xc {
     constructor(domain,key) {
@@ -14,13 +19,13 @@ class F5xc {
         axiosRetry (this.axios, {
             retries: 5,
             retryDelay: (retryCount) => {                
-                return retryCount * 10000; 
+                return retryCount * 20; 
             },
-            retryCondition: (error) => {                
+            retryCondition: (error) => {                       
                 return error.response.status >= 400;
             },
         })
-    
+        
         /*
         this.axios.interceptors.request.use(function (config) {                        
             return config;
@@ -100,7 +105,11 @@ class F5xc {
             'type': 'USER'
         }
 
-        await this.axios.post(endPoint,data);
+        await this.axios.post(endPoint,data, {
+            'axios-retry': {
+                retries: 0
+            }
+        });
     }
 
     async deleteUser(email) {

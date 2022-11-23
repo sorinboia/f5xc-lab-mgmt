@@ -2,4 +2,4 @@
 /db/db.json
 /udf/node_modules/
 /forme.txt
-!/node_modules/axios-retry/es/index.mjs
+!/node_modules/axios-retry/lib/esm/index.js
