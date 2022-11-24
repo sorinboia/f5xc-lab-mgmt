@@ -254,7 +254,7 @@ export default function axiosRetry(axios, defaultOptions) {
 
         config.transformRequest = [data => data];
         onRetry(currentState.retryCount, error, config);
-        console.log('Retrying',error.status, error)
+        
         return new Promise(resolve => setTimeout(() => resolve(axios(config)), delay));
       }
       

@@ -19,7 +19,7 @@ class F5xc {
         axiosRetry (this.axios, {
             retries: 5,
             retryDelay: (retryCount) => {                
-                return retryCount * 20; 
+                return retryCount * 10000; 
             },
             retryCondition: (error) => {                       
                 return error.response.status >= 400;
