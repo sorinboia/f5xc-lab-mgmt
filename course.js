@@ -245,9 +245,8 @@ class Course {
                     if (error_output) {
                         log.info(`${email} TF issue . Error ${error_output}`);
                         if (error_output.indexOf('PendingVerification') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});    
-                        if (error_output.indexOf('failed to apply') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});                            
-                        if (error_output.indexOf('InvalidClientToken') > -1  && state == 'deleting') {
-                            
+                        //if (error_output.indexOf('failed to apply') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});                            
+                        if (error_output.indexOf('InvalidClientToken') > -1  && state == 'deleting') {                            
                             await this.f5xc.deleteAwsVpcSite({name: awsSiteName});       
                         }                        
                     }   
