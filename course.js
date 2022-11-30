@@ -250,7 +250,7 @@ class Course {
                     
                     if (!res) return;
                     
-                    const  {apply_state, error_output } = res.status.apply_status;
+                    const  {apply_state, error_output } = res.status.apply_status || {apply_state:null, error_output: null  };
                 
                     if (apply_state) {                        
                         this.db.data.students[hash].f5xcTf.awsVpcSite = apply_state;
