@@ -33,7 +33,7 @@ curl -X POST -H "Content-Type: application/json" -d  http://localhost:8080/v1/st
     http://localhost:8080/v1/student
 
     curl -X POST -H "Content-Type: application/json" \
-    -d '{"email": "sorinboia@gmail.com", "udfHost": "aa0fd77d-fe0c-46d6-b29e-f839a0d8aeb4.access.udf.f5.com", "region": "europe-west2", "awsAccountId": "578098460221", "awsApiKey": "AKIAYNGK2OY6Q5JYCIY6", "awsApiSecret": "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", "awsAz": "eu-west-2a", "awsRegion": "eu-west-2", "subnetId": "subnet-06cf4315ab20dd9a8", "vpcId": "vpc-0809ed6c899ea7ab2" }' \
+    -d '{"email": "s.boiangiu@f5.com", "udfHost": "0db711ef-45f9-4769-98e7-d5c48ad8c792.access.udf.f5.com", "region": "europe-west2", "awsAccountId": "408802249026", "awsApiKey": "AKIAV6LUDJFBFX3UK7MS", "awsApiSecret": "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", "awsAz": "eu-west-2a", "awsRegion": "eu-west-2", "subnetId": "subnet-0419184d641d67f4e", "vpcId": "vpc-0b3be9084d1faa689" }' \
     http://localhost:8080/v1/student
 
 {"email": "sorinboia1@gmail.com", "udfHost": "2cccad05-c457-45bc-83aa-4621184c0175.access.udf.f5.com", "region": "europe-west2", "awsAccountId": "721234419795", "awsApiKey": "AKIA2P3HL4BJZMV6DZF2", "awsApiSecret": "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", "awsAz": "eu-west-2a", "awsRegion": "eu-west-2", "subnetId": "subnet-0acfe9f6cfcd03d5f", "vpcId": "vpc-0e01b92c36953e9ef" }

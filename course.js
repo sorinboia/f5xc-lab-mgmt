@@ -54,6 +54,20 @@ const createNames = (email) => {
     return { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName};
 }
 
+const queue = [];
+
+setInterval(()=> {
+    const data = queue.shift();
+    if (data) {
+        const { f5xc ,log , lowerEmail, makeId, name, namespace, cloudCredentials, awsRegion, awsAz, vpcId, subnetId } = data;
+        log.info(lowerEmail + ' creating site AWS VPC site')
+        f5xc.createAwsVpcSite({makeId, name, namespace, cloudCredentials, awsRegion, awsAz, vpcId, subnetId }).catch((e) =>  {                     
+            log.warn({email:lowerEmail,operation:'createAwsVpcSite',...e}); 
+        });
+    }
+},30000);
+
+
 
 class Course {
     constructor({domain,key}) {
@@ -111,10 +125,11 @@ class Course {
             }
 
             if (!err) {
-                await this.f5xc.createAwsVpcSite({makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId }).catch((e) =>  {                     
+                queue.push({f5xc:this.f5xc ,log , lowerEmail,makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId });
+                /* await this.f5xc.createAwsVpcSite({makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId }).catch((e) =>  {                     
                     log.warn({operation:'createAwsVpcSite',...e}); 
                     err = {operation:'createAwsVpcSite',...e};                
-                });
+                }); */
             }
 
             
@@ -245,7 +260,7 @@ class Course {
                     if (error_output) {
                         log.info(`${email} TF issue . Error ${error_output}`);
                         if (error_output.indexOf('PendingVerification') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});    
-                        //if (error_output.indexOf('failed to apply') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});                            
+                        if (error_output.indexOf('failed to apply') > -1 ) await this.f5xc.awsVpcSiteTF({name: awsSiteName, action: 'APPLY'});                            
                         if (error_output.indexOf('InvalidClientToken') > -1  && state == 'deleting') {                            
                             await this.f5xc.deleteAwsVpcSite({name: awsSiteName});       
                         }                        
