@@ -65,7 +65,7 @@ setInterval(()=> {
             log.warn({email:lowerEmail,operation:'createAwsVpcSite',...e}); 
         });
     }
-},30000);
+},60000);
 
 
 
