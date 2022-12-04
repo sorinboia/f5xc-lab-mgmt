@@ -168,7 +168,7 @@ class Course {
 
         const { lowerEmail, namespace, ccName, awsSiteName, ceOnPrem, makeId} =  studentCreatedNames || createdNames;
         hash = hash || generateHash([lowerEmail, makeId]);
-        const userExisted = this.db.data.students[hash];
+        const userExisted = this.db.data.students[hash].userExisted;
         
        
         await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
