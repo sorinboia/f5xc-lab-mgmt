@@ -169,6 +169,7 @@ const generateHugo = async () => {
     const udfArcadia = _.find(_.find(deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
     const ceOnPrem = db.data.functions.f5xcCreateUserEnv.output.createdNames.ceOnPrem.clusterName;
     const acradiaCe = _.find(_.find(deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
+    const dockerRegistry = _.find(_.find(deployment.components,{name:'Jumphost'}).accessMethods.https,{label:'Docker Registry'}).host;
     const ceOnAws = db.data.functions.f5xcCreateUserEnv.output.createdNames.awsSiteName;
     const namespace = db.data.functions.f5xcCreateUserEnv.output.createdNames.namespace;
 
@@ -180,7 +181,9 @@ const generateHugo = async () => {
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::acradiaCe::/${acradiaCe}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::ceOnAws::/${ceOnAws}/g' {} \\;`);
     exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::namespace::/${namespace}/g' {} \\;`);
-    
+    exec(`find /home/ubuntu/lab/udf/startup/hugo/content/ -type f -exec sed -i -e 's/::dockerRegistry::/${dockerRegistry}/g' {} \\;`);
+
+
     exec('cd /home/ubuntu/lab/udf/startup/hugo && hugo -D -d /home/ubuntu/hugo');
     
 
