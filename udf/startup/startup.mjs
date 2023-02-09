@@ -61,7 +61,8 @@ const terraform = async () => {
     exec(`aws configure set aws_access_key_id ${db.data.udfMetadata.awsApiKey}`);
     exec(`aws configure set aws_secret_access_key ${db.data.udfMetadata.awsApiSecret}`);
     
-    exec(`aws ecr get-login-password --region  eu-central-1 | docker login --username AWS --password-stdin ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com`);    exec(`aws ecr create-repository --repository-name arcadia-stocks --region eu-west-2`);
+    exec(`aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com`);
+    exec(`aws ecr create-repository --repository-name arcadia-stocks --region eu-central-1`);
     exec(`docker tag sorinboiaf5/arcadia-stocks:ocp ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com/arcadia-stocks:ocp`);
     exec(`docker push ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com/arcadia-stocks:ocp`);
     
