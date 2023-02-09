@@ -60,6 +60,11 @@ const terraform = async () => {
   try {
     exec(`aws configure set aws_access_key_id ${db.data.udfMetadata.awsApiKey}`);
     exec(`aws configure set aws_secret_access_key ${db.data.udfMetadata.awsApiSecret}`);
+    
+    exec(`aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com`);    exec(`aws ecr create-repository --repository-name arcadia-stocks --region eu-west-2`);
+    exec(`docker tag sorinboiaf5/arcadia-stocks:ocp ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com/arcadia-stocks:ocp`);
+    exec(`docker push ${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com/arcadia-stocks:ocp`);
+    
     exec('terraform -chdir=/home/ubuntu/lab/udf/terraform init');
     exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
     exec('terraform -chdir=/home/ubuntu/lab/udf/terraform apply --auto-approve');
@@ -169,7 +174,7 @@ const generateHugo = async () => {
     const udfArcadia = _.find(_.find(deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
     const ceOnPrem = db.data.functions.f5xcCreateUserEnv.output.createdNames.ceOnPrem.clusterName;
     const acradiaCe = _.find(_.find(deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
-    const dockerRegistry = _.find(_.find(deployment.components,{name:'Jumphost'}).accessMethods.https,{label:'Docker Registry'}).host;
+    const dockerRegistry = `${db.data.udfMetadata.awsAccountId}.dkr.ecr.eu-central-1.amazonaws.com`;
     const ceOnAws = db.data.functions.f5xcCreateUserEnv.output.createdNames.awsSiteName;
     const namespace = db.data.functions.f5xcCreateUserEnv.output.createdNames.namespace;
 
