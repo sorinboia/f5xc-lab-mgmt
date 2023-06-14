@@ -15,7 +15,7 @@ class F5xc {
                 'Content-Type': 'application/json'
             }
         });
-
+        
         axiosRetry (this.axios, {
             retries: 5,
             retryDelay: (retryCount) => {                
@@ -110,6 +110,16 @@ class F5xc {
                 retries: 0
             }
         });
+    }
+
+    async getUsersNs() {  
+        const endPoint = '/api/web/custom/namespaces/system/user_roles';        
+        const { data } = await this.axios.get(endPoint,{
+            'axios-retry': {
+                retries: 0
+            }
+        })  
+        return data;
     }
 
     async deleteUser(email) {

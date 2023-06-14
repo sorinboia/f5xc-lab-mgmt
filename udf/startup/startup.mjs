@@ -106,10 +106,10 @@ const f5xcCreateUserEnv = async () => {
 const registerOnPremCe = async () => {      
   let state = 3, error, output;
   try {
-    const ip = '10.1.1.7:65500';
+    const ip = '10.1.1.5:65500';
     const createdUserData = db.data.functions.f5xcCreateUserEnv.output;    
     const onPremCePostData = {
-      token: '18db4163-9f4f-438a-b922-c617ae7ac4ed',
+      token: '771e948b-f6ef-4338-9b50-953762f7a2a7',
       cluster_name: createdUserData.createdNames.ceOnPrem.clusterName,
       hostname: createdUserData.createdNames.ceOnPrem.hostname,
       latitude: '32.06440042393975',
@@ -282,18 +282,13 @@ db.data = db.data || {
       state: 0,
       key: 'installAwsMicrok8s'          
     },
-    generateHugo: {
-      order: 6,
-      state: 0,
-      key: 'generateHugo'         
-    },
     awsCeLbRecordUpdate: {
-      order: 7,
+      order: 6,
       state: 0,
       key: 'awsCeLbRecordUpdate'          
     },
     runBot: {
-      order: 8,
+      order: 7,
       state: 0,
       key: 'runBot'          
     }       
@@ -305,7 +300,6 @@ db.data.functions.terraform.func = terraform;
 db.data.functions.f5xcCreateUserEnv.func = f5xcCreateUserEnv;
 db.data.functions.registerOnPremCe.func = registerOnPremCe;
 db.data.functions.installAwsMicrok8s.func = installAwsMicrok8s;
-db.data.functions.generateHugo.func = generateHugo;
 db.data.functions.awsCeLbRecordUpdate.func = awsCeLbRecordUpdate;
 db.data.functions.runBot.func = runBot;
 

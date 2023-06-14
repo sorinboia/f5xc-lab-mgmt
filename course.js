@@ -82,7 +82,8 @@ class Course {
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
         if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
         const createdNames = createNames(email);
-        const { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
+        const { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
+        let namespace;
         const hash = generateHash([lowerEmail,makeId]);
         this.log[hash] = log;
         let userExisted = 'no';
@@ -96,6 +97,7 @@ class Course {
         
         
         if (studentValidity) {
+            /*
             await this.f5xc.createNS(namespace).catch((e) =>  { 
                 log.warn({operation:'createNS',...e}); 
                 err = {operation:'createNS',...e};                
@@ -115,7 +117,43 @@ class Course {
                 }
                 
             });            
+            */
+
             
+            await (new Promise(async (resolve,reject) => {
+                let userCheckRep = 0;
+                const userCheck = setInterval(async ()=> {                                
+                    userCheckRep++;                    
+                    if (userCheckRep <= 10) {
+                        console.log(userCheckRep);                                ;
+                        const users = await this.f5xc.getUsersNs();
+                        
+                        users.items.forEach(element => {
+                            if (element.email == email) {
+                                element.namespace_roles.forEach((item) => {
+                                    if (item.role == 'ves-io-power-developer-role') {                                        
+                                        namespace = item.namespace;                                        
+                                        clearInterval(userCheck);
+                                        resolve();
+
+                                    }
+                                })
+                            }                                                
+                        });
+    
+    
+                    } else {
+                        log.warn({operation:'getUsersNs',error:`Could not find user ${email}`}); 
+                        err = {operation:'getUsersNs',error:`Could not find user ${email}`};   
+                        
+                        clearInterval(userCheck);
+                        reject();
+                    }                
+                },5000);
+            })); 
+
+            console.log(namespace);
+            return;
                         
             if (!err) {
                 await this.f5xc.createCloudCredentials({name: ccName, namespace, awsApiKey, awsApiSecret }).catch((e) =>  {                     
@@ -179,6 +217,7 @@ class Course {
             log.warn({operation:'deleteCloudCredentials',...e});             
         });
 
+        /*
         if (userExisted == 'yes') {
             log.warn('User existed, not deleting');
         } else {
@@ -190,6 +229,7 @@ class Course {
         await this.f5xc.deleteNS(namespace).catch((e) =>  { 
             log.warn({operation:'deleteNS',...e});             
         });
+        */
 
         await this.f5xc.deleteSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
             log.warn({operation:'deleteSite',...e});             
