@@ -87,7 +87,9 @@ const f5xcCreateUserEnv = async () => {
       subnetId: tfOutput.subnet_id.value,
       vpcId: tfOutput.vpc_id.value    
     };
-            
+    console.log(JSON.stringify(dataToPost));
+    logger.info(JSON.stringify(dataToPost));
+    process.exit();
     output = (await axios.post(`${f5xcLabMgmtDomain}/v1/student`,dataToPost)).data;
     if (output.code == 6) {
       state = 2;

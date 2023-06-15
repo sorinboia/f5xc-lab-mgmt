@@ -79,12 +79,18 @@ class Course {
         this.periodicChecks();                
     }
 
+
+    getStudentDetails({email}) {
+        const hash = generateHash([lowerEmail]);
+        return this.db.data.students[hash];
+    }
+
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
         if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
         const createdNames = createNames(email);
         const { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
         let namespace;
-        const hash = generateHash([lowerEmail,makeId]);
+        const hash = generateHash([lowerEmail]);
         this.log[hash] = log;
         let userExisted = 'no';
         
@@ -202,7 +208,7 @@ class Course {
         if (hash) studentCreatedNames = this.db.data.students[hash].createdNames; 
 
         const { lowerEmail, namespace, ccName, awsSiteName, ceOnPrem, makeId} =  studentCreatedNames || createdNames;
-        hash = hash || generateHash([lowerEmail, makeId]);
+        hash = hash || generateHash([lowerEmail]);
         const userExisted = this.db.data.students[hash].userExisted;
         
        

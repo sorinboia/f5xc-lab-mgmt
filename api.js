@@ -43,6 +43,24 @@ fastify.route({
 });
 
 fastify.route({
+  method: 'GET',
+  url: '/v1/student/:email',
+  handler: async (request,reply) => {        
+      
+    request.log.info(`Getting student data for ${request.email}`);
+    
+    if (c) {
+      return getStudentDetails({ email: request.email });
+      
+    } else {
+      request.log.info('No available credentials for F5XC');
+      return {success:'fail',msg:'No available credentials for F5XC'}
+    }
+      
+  }
+});
+
+fastify.route({
   method: 'DELETE',
   url: '/v1/student',
   handler: async (request,reply) => {        
