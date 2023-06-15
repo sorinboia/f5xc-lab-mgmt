@@ -108,6 +108,7 @@ const registerOnPremCe = async () => {
   try {
     const ip = '10.1.1.5:65500';
     const createdUserData = db.data.functions.f5xcCreateUserEnv.output;    
+    
     const onPremCePostData = {
       token: '771e948b-f6ef-4338-9b50-953762f7a2a7',
       cluster_name: createdUserData.createdNames.ceOnPrem.clusterName,
