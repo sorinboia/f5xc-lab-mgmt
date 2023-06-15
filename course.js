@@ -151,10 +151,7 @@ class Course {
                     }                
                 },5000);
             })); 
-
-            console.log(namespace);
-            return;
-                        
+                                            
             if (!err) {
                 await this.f5xc.createCloudCredentials({name: ccName, namespace, awsApiKey, awsApiSecret }).catch((e) =>  {                     
                     log.warn({operation:'createCloudCredentials',...e}); 
