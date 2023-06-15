@@ -17,7 +17,7 @@ const validateStudent = async ({udfHost,ip}) => {
     };
     const result = await dns.promises.lookup(udfHost, options);
     
-    return true || result.address == ip; 
+    return result.address == ip; 
 }
 
 const generateHash = (arr) => {
@@ -42,7 +42,7 @@ const createNames = (email) => {
     const lowerEmail = email.toLowerCase();
     const randomPart = (new Date()).toISOString().split('T')[0].replace(/-/g,'').slice(4) + '-' + makeId;
     const id = randomPart;
-    const namespace = 'ns-' + id;
+    //const namespace = 'ns-' + id;
     const ccName = 'cc-' + id;
     const awsSiteName = 'as-' + id;
     const ceOnPrem = {
@@ -81,8 +81,8 @@ class Course {
 
 
     getStudentDetails({email}) {
-        const hash = generateHash([lowerEmail]);
-        return this.db.data.students[hash];
+        const hash = generateHash([email.toLowerCase()]);        
+        return this.db.data.students[hash].createdNames;
     }
 
     async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
@@ -140,6 +140,7 @@ class Course {
                                     if (item.role == 'ves-io-power-developer-role') {                                        
                                         namespace = item.namespace;                                        
                                         clearInterval(userCheck);
+                                        createdNames.namespace = namespace;
                                         resolve();
 
                                     }

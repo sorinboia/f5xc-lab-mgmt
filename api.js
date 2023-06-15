@@ -44,13 +44,14 @@ fastify.route({
 
 fastify.route({
   method: 'GET',
-  url: '/v1/student/:email',
+  url: '/v1/student/:emailb64',
   handler: async (request,reply) => {        
-      
-    request.log.info(`Getting student data for ${request.email}`);
+    
+    const email = Buffer.from(request.params.emailb64, 'base64').toString('utf8')  
+    request.log.info(`Getting student data for ${email}`);
     
     if (c) {
-      return getStudentDetails({ email: request.email });
+      return c.getStudentDetails({ email });
       
     } else {
       request.log.info('No available credentials for F5XC');
