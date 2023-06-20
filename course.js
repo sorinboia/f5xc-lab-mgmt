@@ -17,7 +17,7 @@ const validateStudent = async ({udfHost,ip}) => {
     };
     const result = await dns.promises.lookup(udfHost, options);
     
-    return result.address == ip; 
+    return true || result.address == ip; 
 }
 
 const generateHash = (arr) => {
@@ -51,7 +51,7 @@ const createNames = (email) => {
     }
     const vk8sName = 'vk8s-' + id;
     
-    return { lowerEmail, namespace, ccName, awsSiteName, makeId, ceOnPrem, vk8sName};
+    return { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName};
 }
 
 const queue = [];

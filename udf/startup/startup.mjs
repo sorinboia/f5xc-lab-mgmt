@@ -44,6 +44,11 @@ const getUdfMetadata = async () => {
       db.data.udfMetadata.email = metaDeployment.deployment.deployer;
       db.data.udfMetadata.udfHost = metaDeployment.deployment.host;
       db.data.udfMetadata.region = metaDeployment.deployment.region;
+      
+      db.data.udfMetadata.hostArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
+      db.data.udfMetadata.ceArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
+      
+      
       output = { metaCloudAccounts, metaDeployment }
       state = 1;
       db.write();
