@@ -81,11 +81,12 @@ class Course {
 
 
     getStudentDetails({email}) {
-        const hash = generateHash([email.toLowerCase()]);        
-        return this.db.data.students[hash].createdNames;
+        const hash = generateHash([email.toLowerCase()]);  
+        const { createdNames, hostArcadia, ceArcadia } =  this.db.data.students[hash]
+        return { ...createdNames, hostArcadia, ceArcadia  };
     }
 
-    async newStudent({ email, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
+    async newStudent({ email, hostArcadia, ceArcadia, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
         if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
         const createdNames = createNames(email);
         const { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
@@ -183,7 +184,7 @@ class Course {
             }
 
             if (!err) {
-                this.db.data.students[hash] = { email, userExisted, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
+                this.db.data.students[hash] = { email, hostArcadia, ceArcadia, userExisted, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
                 this.db.write();
                 log.info('Student created');
