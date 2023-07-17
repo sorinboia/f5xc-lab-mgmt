@@ -43,7 +43,7 @@ spec:
             name: arcadia-frontend
             port:
               number: 80
-  - host: "*.sales-public.f5demos.com"
+  - host: "*.workshop.emea.f5se.com"
     http:
       paths:
       - path: /v1/user
