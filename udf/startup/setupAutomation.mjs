@@ -140,7 +140,7 @@ class setupAutomation {
             vpcId: tfOutput.vpc_id.value    
           };
       
-          output = (await axios.post(`${f5xcLabMgmtDomain}/v1/student`,dataToPost)).data;
+          output = (await axios.post(`${this.f5xcLabMgmtDomain}/v1/student`,dataToPost)).data;
           if (output.code == 6) {
             state = 2;
           } else {
