@@ -4,7 +4,7 @@ const f5xcLabMgmtDomain = 'https://f5xclabmgmt.vltr.nginx-experience.com';
 
 const args = process.argv.slice(2);
 const course = args[0];
-
+console.log('Args are',args);
 
 
 const main = async () => {
