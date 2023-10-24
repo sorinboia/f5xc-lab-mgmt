@@ -11,6 +11,7 @@ const main = async () => {
   switch (course) {
     case 'f5xcemeaworkshop':
       const runSetup = new setupAutomation ({ 
+        courseId: course,
         f5xcLabMgmtDomain,
         steps: [
           'terraform',

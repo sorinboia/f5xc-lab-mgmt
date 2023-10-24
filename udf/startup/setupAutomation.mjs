@@ -13,12 +13,13 @@ const exec = (cmd) => {
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class setupAutomation {
-    constructor({ steps, f5xcLabMgmtDomain }) {
+    constructor({ courseId, steps, f5xcLabMgmtDomain }) {
         this.f5xcLabMgmtDomain = f5xcLabMgmtDomain;
         this.steps = steps;
         this.db = new LowSync(new JSONFileSync('./db.json'));
         this.db.read();
         this.db.data = this.db.data || {
+            courseId,
             udfMetadata: {},
             dataToPostF5xcmgmt: {}, 
             functions: {
@@ -111,6 +112,7 @@ class setupAutomation {
           const udfMetadata = this.db.data.udfMetadata;
           const tfOutput = this.db.data.functions.terraform.output;
           const dataToPost = { 
+            courseId: this.courseId,
             ...udfMetadata,
             awsAz: tfOutput.az.value,
             awsRegion: tfOutput.region.value,
