@@ -3,6 +3,26 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import axios from 'axios';
 import { execSync } from 'child_process';
 import _ from 'lodash';
+import { LowSync, JSONFileSync } from 'lowdb';
+import pino from 'pino';
+import pretty from 'pino-pretty';
+
+const createSonicBoom = (dest) =>
+  pino.destination({ dest: dest, sync: true, append: false, mkdir: true });
+const streams = [
+  { stream: pretty({
+    sync: true,
+    ignore: 'pid,hostname',
+    crlf: true
+  }) },
+  { stream: pretty({
+    sync: true,
+    ignore: 'pid,hostname',
+    crlf: true,
+    destination: createSonicBoom('./log')
+  }) }, 
+];
+const logger = pino({}, pino.multistream(streams));
 
 const exec = (cmd) => {
     const result = execSync(cmd);    
