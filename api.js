@@ -60,17 +60,28 @@ fastify.route({
   url: '/v1/student/:emailb64',
   handler: async (request,reply) => {        
     
-    const email = Buffer.from(request.params.emailb64, 'base64').toString('utf8')  
-    request.log.info(`Getting student data for ${email}`);
-    
-    if (c) {
-      return c.getStudentDetails({ email });
-      
+    const email = Buffer.from(request.params.emailb64, 'base64').toString('utf8')      
+    const { courseId } = request.body;
+
+    request.log.info(`Getting student data for ${email} courseId ${courseId}`);
+    if (f5xcemeaworkshop) {
+      let result;
+      switch (courseId) {
+        case 'f5xcemeaworkshop':
+          result = await f5xcemeaworkshop.getStudentDetails({ email });      
+          break;
+        case 'f5xcemeak8sworkshop':
+          result = await f5xcemeak8sworkshop.getStudentDetails({ email });    
+          break;
+        default:
+          result = {success:'fail',msg:'Unknow courseId'}
+      }              
+      return result;
     } else {
       request.log.info('No available credentials for F5XC');
       return {success:'fail',msg:'No available credentials for F5XC'}
     }
-      
+  
   }
 });
 
