@@ -57,11 +57,12 @@ fastify.route({
 
 fastify.route({
   method: 'GET',
-  url: '/v1/student/:emailb64',
+  url: '/v1/student/:courseId/:emailb64',
   handler: async (request,reply) => {        
     
-    const email = Buffer.from(request.params.emailb64, 'base64').toString('utf8')      
-    const { courseId } = request.body;
+    const email = Buffer.from(request.params.emailb64, 'base64').toString('utf8');
+    const courseId = request.params.courseId;
+    
 
     request.log.info(`Getting student data for ${email} courseId ${courseId}`);
     if (f5xcemeaworkshop) {

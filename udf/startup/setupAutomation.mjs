@@ -38,6 +38,7 @@ class setupAutomation {
         this.steps = steps;
         this.db = new LowSync(new JSONFileSync('./db.json'));
         this.db.read();
+        this.courseId = courseId
         this.db.data = this.db.data || {
             courseId,
             udfMetadata: {},
