@@ -16,12 +16,14 @@ const fastify = Fastify({
 
 
 
-import Course from './course.js';
-let c;
+import Xcworkshop from './xcworkshop.js';
+import Xck8sworkshop from './xck8sworkshop.js';
+let f5xcemeaworkshop, f5xcemeak8sworkshop;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
-  c = new Course({domain:args[0],key:args[1]});
+  f5xcemeaworkshop = new Xcworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaworkshop'});
+  f5xcemeak8sworkshop = new Xck8sworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeak8sworkshop'});
 }
 
 
@@ -30,9 +32,20 @@ fastify.route({
     method: 'POST',
     url: '/v1/student',
     handler: async (request,reply) => {        
-        if (c) {
+        if (f5xcemeaworkshop) {
           request.log.info(request.body);
-          const result = await c.newStudent({ ...request.body, ip: request.ip, log: request.log });        
+          const { courseId } = request.body;
+          let result;
+          switch (courseId) {
+            case 'f5xcemeaworkshop':
+              result = await f5xcemeaworkshop.newStudent({ ...request.body, ip: request.ip, log: request.log });      
+              break;
+            case 'f5xcemeak8sworkshop':
+              result = await f5xcemeak8sworkshop.newStudent({ ...request.body, ip: request.ip, log: request.log });    
+              break;
+            default:
+              result = {success:'fail',msg:'Unknow courseId'}
+          }          
           return result;
         } else {
           request.log.info('No available credentials for F5XC');
@@ -77,8 +90,8 @@ fastify.route({
   url: '/v1/f5xcred',
   handler: async (request,reply) => {              
       request.log.info('Credentials received for F5XC');
-      c = new Course(request.body);
-      
+      f5xcemeaworkshop = new Xcworkshop(request.body);
+      f5xcemeak8sworkshop = new Xck8sworkshop(request.body);      
   }
 });
 
