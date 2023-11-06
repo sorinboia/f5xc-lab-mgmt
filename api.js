@@ -34,7 +34,7 @@ fastify.route({
     handler: async (request,reply) => {        
         if (f5xcemeaworkshop) {
           request.log.info(request.body);
-          const { courseId, email } = request.body;
+          let { courseId, email } = request.body;
           
           if (email.toLowerCase() == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
           if (email.toLowerCase() == 'm.dierick@f5.com') email = 'matt262810@gmail.com';        
