@@ -32,6 +32,14 @@ class Xck8sworkshop extends Course {
         const { hash, namespace, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames } = initNewStudent;
 
         if (!err) {
+            await this.f5xc.updateUserForK8s({ email ,nsName: namespace }).catch((e) =>  {                     
+                log.warn({operation:'updateUserForK8s',...e}); 
+                err = {operation:'updateUserForK8s',...e};                
+            });
+        }
+
+        if (!err) {
+            
             this.db.data.students[hash] = { email, hostArcadia, ceArcadia, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
             this.db.write();
