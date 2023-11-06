@@ -131,15 +131,22 @@ class setupAutomation {
         let state = 3, error, output;
         try {
           const udfMetadata = this.db.data.udfMetadata;
-          const tfOutput = this.db.data.functions.terraform.output;
+          
           const dataToPost = { 
             courseId: this.courseId,
-            ...udfMetadata,
-            awsAz: tfOutput.az.value,
-            awsRegion: tfOutput.region.value,
-            subnetId: tfOutput.subnet_id.value,
-            vpcId: tfOutput.vpc_id.value    
+            ...udfMetadata            
           };
+          
+          if (this.db.data.functions.terraform) {
+            const tfOutput = this.db.data.functions.terraform.output;
+            dataToPost = {
+              ...dataToPost,
+              awsAz: tfOutput.az.value,
+              awsRegion: tfOutput.region.value,
+              subnetId: tfOutput.subnet_id.value,
+              vpcId: tfOutput.vpc_id.value    
+            }
+          }
       
           output = (await axios.post(`${this.f5xcLabMgmtDomain}/v1/student`,dataToPost)).data;
           if (output.code == 6) {
