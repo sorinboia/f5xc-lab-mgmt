@@ -7,10 +7,12 @@ const course = args[0];
 console.log('Args are',args);
 
 
+let runSetup;
+
 const main = async () => {
   switch (course) {
     case 'f5xcemeaworkshop':
-      const runSetup = new setupAutomation ({ 
+        runSetup = new setupAutomation ({ 
         courseId: course,
         f5xcLabMgmtDomain,
         steps: [
@@ -24,10 +26,21 @@ const main = async () => {
       })
       await runSetup.run();
       break;
-    case 'f5xcemeaapi':
+
+    case 'f5xcemeaapiworkshop':
       break;
-    case 'f5xcemeak8s':
+
+    case 'f5xcemeak8sworkshop':
+      runSetup = new setupAutomation ({ 
+        courseId: course,
+        f5xcLabMgmtDomain,
+        steps: [          
+          'f5xcCreateUserEnv'
+        ]
+      })
+      await runSetup.run();
       break;
+
     default:
       console.log('Unknow course')
       break;
