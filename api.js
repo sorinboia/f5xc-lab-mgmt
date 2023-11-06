@@ -34,14 +34,18 @@ fastify.route({
     handler: async (request,reply) => {        
         if (f5xcemeaworkshop) {
           request.log.info(request.body);
-          const { courseId } = request.body;
+          const { courseId, email } = request.body;
+          
+          if (email.toLowerCase() == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
+          if (email.toLowerCase() == 'm.dierick@f5.com') email = 'matt262810@gmail.com';        
+
           let result;
           switch (courseId) {
             case 'f5xcemeaworkshop':
-              result = await f5xcemeaworkshop.newStudent({ ...request.body, ip: request.ip, log: request.log });      
+              result = await f5xcemeaworkshop.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
               break;
             case 'f5xcemeak8sworkshop':
-              result = await f5xcemeak8sworkshop.newStudent({ ...request.body, ip: request.ip, log: request.log });    
+              result = await f5xcemeak8sworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
               break;
             default:
               result = {success:'fail',msg:'Unknow courseId'}

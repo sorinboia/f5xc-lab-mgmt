@@ -263,7 +263,7 @@ class setupAutomation {
         try {
           const makeid = this.db.data.functions.f5xcCreateUserEnv.output.makeId;
           
-          exec(`docker run -d -e TARGETURL=http://arcadia-re-${makeid}.workshop.emea.f5se.com/ sorinboiaf5/arcadia-bot:latest`);
+          exec(`docker run -d -e TARGETURL=http://arcadia-re-${makeid}.workshop.emea.f5se.com/sorinboiaf5/arcadia-bot:latest`);
          
       
           state = 1;

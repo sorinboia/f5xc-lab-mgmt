@@ -75,8 +75,7 @@ class Course {
         return { ...createdNames, hostArcadia, ceArcadia  };
     }
 
-    async newStudent({ email, hostArcadia, ceArcadia, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {        
-        if (email == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
+    async newStudent({ email, hostArcadia, ceArcadia, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {                
         const createdNames = createNames(email);
         const { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
         let namespace;
