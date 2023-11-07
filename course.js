@@ -50,8 +50,10 @@ const createNames = (email) => {
         hostname: 'ceophost' + id
     }
     const vk8sName = 'vk8s-' + id;
+
+    const kubeconfig = 'kubeconfig-' + id
     
-    return { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName};
+    return { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, kubeconfig};
 }
 
 

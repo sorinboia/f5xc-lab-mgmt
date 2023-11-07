@@ -135,6 +135,10 @@ class F5xc {
                    "role":"emea-workshop-role"
                 },
                 {
+                    "namespace":"shared",
+                    "role":"emea-workshop-k8s-role"
+                 },                
+                {
                    "namespace": nsName,
                    "role":"ves-io-power-developer-role"
                 }
@@ -318,7 +322,16 @@ class F5xc {
                 
         await this.axios.post(endPoint,data);
     }
-}
 
+    async deleteKubeconfig({ kubeconfig }) {       
+        const endPoint = `/api/config/namespaces/system/discoverys/${kubeconfig}`        
+        const { data } = await this.axios.delete(endPoint,{
+            "fail_if_referred": true,
+            "name": kubeconfig,
+            "namespace": "system"
+            });
+        return data; 
+    }
+}
 
 export default F5xc;

@@ -29,7 +29,7 @@ class Xck8sworkshop extends Course {
             err = initNewStudent;
         }
         
-        const { hash, namespace, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames } = initNewStudent;
+        const { hash, namespace, kubeconfig, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames } = initNewStudent;
 
         if (!err) {
             await this.f5xc.updateUserForK8s({ email ,nsName: namespace }).catch((e) =>  {                     
@@ -40,7 +40,7 @@ class Xck8sworkshop extends Course {
 
         if (!err) {
             
-            this.db.data.students[hash] = { email, hostArcadia, ceArcadia, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
+            this.db.data.students[hash] = { email, hostArcadia, ceArcadia, kubeconfig, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
             this.db.write();
             log.info('Student created');
@@ -57,10 +57,16 @@ class Xck8sworkshop extends Course {
         let studentCreatedNames;
         if (hash) studentCreatedNames = this.db.data.students[hash].createdNames; 
 
-        const { lowerEmail,  makeId} =  studentCreatedNames || createdNames;
+        const { lowerEmail,  makeId, ceOnPrem, kubeconfig} =  studentCreatedNames || createdNames;
         hash = hash || generateHash([lowerEmail]);
                        
+        await this.f5xc.deleteSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
+            log.warn({operation:'deleteSite',...e});             
+        });
 
+        await this.f5xc.deleteKubeconfig({ kubeconfig }).catch((e) =>  { 
+            log.warn({operation:'deleteKubeconfig',...e});             
+        });
                 
         if (this.db.data.students[hash]) {
             log.info(`${lowerEmail} with ${makeId} is being deleted`);
