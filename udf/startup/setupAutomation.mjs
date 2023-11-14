@@ -59,6 +59,7 @@ class setupAutomation {
             exec('rm /home/ubuntu/startup/error');
         } catch(e) {
         }
+        logger.info(`Course Id -> ${this.courseId}`);
         const tasks = _.orderBy(this.db.data.functions,['order'],['asc']);
         for (let i=0; i < tasks.length; i++) {
             const { func, key, state} = tasks[i];
