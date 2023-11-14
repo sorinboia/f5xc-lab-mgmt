@@ -1,9 +1,7 @@
 import Course from './course.js';
 
 
-
-
-class Xck8sworkshop extends Course {
+class Xcapiworkshop extends Course {
     constructor({domain,key,courseId}) {
         super({domain,key,courseId});        
     }
@@ -18,13 +16,6 @@ class Xck8sworkshop extends Course {
         }
         
         const { hash, namespace, kubeconfig, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames } = initNewStudent;
-
-        if (!err) {
-            await this.f5xc.updateUserForK8s({ email ,nsName: namespace }).catch((e) =>  {                     
-                log.warn({operation:'updateUserForK8s',...e}); 
-                err = {operation:'updateUserForK8s',...e};                
-            });
-        }
 
         if (!err) {
             
@@ -47,15 +38,7 @@ class Xck8sworkshop extends Course {
 
         const { lowerEmail,  makeId, ceOnPrem, kubeconfig} =  studentCreatedNames || createdNames;
         hash = hash || generateHash([lowerEmail]);
-                       
-        await this.f5xc.deleteSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
-            log.warn({operation:'deleteSite',...e});             
-        });
-
-        await this.f5xc.deleteKubeconfig({ kubeconfig }).catch((e) =>  { 
-            log.warn({operation:'deleteKubeconfig',...e});             
-        });
-                
+                                       
         if (this.db.data.students[hash]) {
             log.info(`${lowerEmail} with ${makeId} is being deleted`);
             setTimeout(() => {
@@ -70,4 +53,4 @@ class Xck8sworkshop extends Course {
 
 }
 
-export default Xck8sworkshop;
+export default Xcapiworkshop;

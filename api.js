@@ -18,12 +18,14 @@ const fastify = Fastify({
 
 import Xcworkshop from './xcworkshop.js';
 import Xck8sworkshop from './xck8sworkshop.js';
+import Xcapiworkshop from './xcapiworkshop.js';
 let f5xcemeaworkshop, f5xcemeak8sworkshop;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
   f5xcemeaworkshop = new Xcworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaworkshop'});
   f5xcemeak8sworkshop = new Xck8sworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeak8sworkshop'});
+  f5xcemeaapiworkshop = new Xcapiworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaapiworkshop'});
 }
 
 
@@ -43,6 +45,9 @@ fastify.route({
           switch (courseId) {
             case 'f5xcemeaworkshop':
               result = await f5xcemeaworkshop.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
+              break;
+            case 'f5xcemeaapiworkshop':
+              result = await f5xcemeaapiworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
               break;
             case 'f5xcemeak8sworkshop':
               result = await f5xcemeak8sworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
@@ -75,9 +80,15 @@ fastify.route({
         case 'f5xcemeaworkshop':
           result = await f5xcemeaworkshop.getStudentDetails({ email });      
           break;
+
+        case 'f5xcemeaapiworkshop':
+          result = await f5xcemeaapiworkshop.getStudentDetails({ email });    
+          break;          
+
         case 'f5xcemeak8sworkshop':
           result = await f5xcemeak8sworkshop.getStudentDetails({ email });    
           break;
+        
         default:
           result = {success:'fail',msg:'Unknow courseId'}
       }              
@@ -108,6 +119,7 @@ fastify.route({
       request.log.info('Credentials received for F5XC');
       f5xcemeaworkshop = new Xcworkshop(request.body);
       f5xcemeak8sworkshop = new Xck8sworkshop(request.body);      
+      f5xcemeaapiworkshop = new Xcapiworkshop(request.body);      
   }
 });
 

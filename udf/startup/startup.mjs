@@ -28,6 +28,13 @@ const main = async () => {
       break;
 
     case 'f5xcemeaapiworkshop':
+      runSetup = new setupAutomation ({ 
+        courseId: course,
+        f5xcLabMgmtDomain,
+        steps: [          
+          'f5xcCreateUserEnv',          
+        ]
+      })      
       break;
 
     case 'f5xcemeak8sworkshop':
