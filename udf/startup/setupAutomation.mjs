@@ -33,8 +33,7 @@ const exec = (cmd) => {
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class setupAutomation {
-    constructor({ courseId, steps, f5xcLabMgmtDomain }) {
-        console.log('API2');
+    constructor({ courseId, steps, f5xcLabMgmtDomain }) {        
         this.f5xcLabMgmtDomain = f5xcLabMgmtDomain;
         this.steps = steps;
         this.db = new LowSync(new JSONFileSync('./db.json'));

@@ -27,13 +27,12 @@ const main = async () => {
       await runSetup.run();
       break;
 
-    case 'f5xcemeaapiworkshop':
-      console.log('API1');
+    case 'f5xcemeaapiworkshop':      
       runSetup = new setupAutomation ({ 
         courseId: course,
         f5xcLabMgmtDomain,
         steps: [          
-          'f5xcCreateUserEnv',          
+          'f5xcCreateUserEnv'      
         ]
       })      
       break;
