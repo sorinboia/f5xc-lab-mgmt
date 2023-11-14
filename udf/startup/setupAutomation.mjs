@@ -34,6 +34,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class setupAutomation {
     constructor({ courseId, steps, f5xcLabMgmtDomain }) {
+        console.log('API2');
         this.f5xcLabMgmtDomain = f5xcLabMgmtDomain;
         this.steps = steps;
         this.db = new LowSync(new JSONFileSync('./db.json'));
@@ -128,6 +129,7 @@ class setupAutomation {
     }
 
     async f5xcCreateUserEnv() {      
+        console.log('API3');
         let state = 3, error, output;
         try {
           const udfMetadata = this.db.data.udfMetadata;

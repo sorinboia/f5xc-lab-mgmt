@@ -28,6 +28,7 @@ const main = async () => {
       break;
 
     case 'f5xcemeaapiworkshop':
+      console.log('API1');
       runSetup = new setupAutomation ({ 
         courseId: course,
         f5xcLabMgmtDomain,
@@ -49,7 +50,7 @@ const main = async () => {
       break;
 
     default:
-      console.log('Unknow course')
+      console.log('Unknown course')
       break;
   }
 }
