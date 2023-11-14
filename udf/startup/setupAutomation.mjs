@@ -59,7 +59,6 @@ class setupAutomation {
             exec('rm /home/ubuntu/startup/error');
         } catch(e) {
         }
-
         const tasks = _.orderBy(this.db.data.functions,['order'],['asc']);
         for (let i=0; i < tasks.length; i++) {
             const { func, key, state} = tasks[i];
@@ -127,8 +126,7 @@ class setupAutomation {
         return {state, output, error};    
     }
 
-    async f5xcCreateUserEnv() {      
-        console.log('API3');
+    async f5xcCreateUserEnv() {              
         let state = 3, error, output;
         try {
           const udfMetadata = this.db.data.udfMetadata;

@@ -34,7 +34,8 @@ const main = async () => {
         steps: [          
           'f5xcCreateUserEnv'      
         ]
-      })      
+      })    
+      await runSetup.run();  
       break;
 
     case 'f5xcemeak8sworkshop':
