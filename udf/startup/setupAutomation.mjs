@@ -102,10 +102,7 @@ class setupAutomation {
               break;            
 
           }
-          this.db.data.udfMetadata.hostArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
-          this.db.data.udfMetadata.ceArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
-          
-          
+                  
           output = { metaCloudAccounts, metaDeployment }
           state = 1;
           this.db.write();
