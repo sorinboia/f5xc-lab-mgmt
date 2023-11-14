@@ -19,7 +19,7 @@ const fastify = Fastify({
 import Xcworkshop from './xcworkshop.js';
 import Xck8sworkshop from './xck8sworkshop.js';
 import Xcapiworkshop from './xcapiworkshop.js';
-let f5xcemeaworkshop, f5xcemeak8sworkshop;
+let f5xcemeaworkshop, f5xcemeak8sworkshop, f5xcemeaapiworkshop;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
