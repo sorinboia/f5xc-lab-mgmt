@@ -117,9 +117,9 @@ fastify.route({
   url: '/v1/f5xcred',
   handler: async (request,reply) => {              
       request.log.info('Credentials received for F5XC');
-      f5xcemeaworkshop = new Xcworkshop(request.body);
-      f5xcemeak8sworkshop = new Xck8sworkshop(request.body);      
-      f5xcemeaapiworkshop = new Xcapiworkshop(request.body);      
+      f5xcemeaworkshop = new Xcworkshop({...request.body, courseId: 'f5xcemeaworkshop' });
+      f5xcemeak8sworkshop = new Xck8sworkshop({...request.body, courseId: 'f5xcemeak8sworkshop' });      
+      f5xcemeaapiworkshop = new Xcapiworkshop({...request.body, courseId: 'f5xcemeaapiworkshop' });      
   }
 });
 

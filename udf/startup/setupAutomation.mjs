@@ -82,9 +82,11 @@ class setupAutomation {
        let state = 3, error, output;
        try {            
           const metaCloudAccounts = (await axios.get('http://metadata.udf/cloudAccounts')).data;
-          this.db.data.udfMetadata.awsAccountId = metaCloudAccounts.cloudAccounts[0].accountId;
-          this.db.data.udfMetadata.awsApiKey = metaCloudAccounts.cloudAccounts[0].apiKey;
-          this.db.data.udfMetadata.awsApiSecret = metaCloudAccounts.cloudAccounts[0].apiSecret;
+          if (metaCloudAccounts) {
+            this.db.data.udfMetadata.awsAccountId = metaCloudAccounts.cloudAccounts[0].accountId;
+            this.db.data.udfMetadata.awsApiKey = metaCloudAccounts.cloudAccounts[0].apiKey;
+            this.db.data.udfMetadata.awsApiSecret = metaCloudAccounts.cloudAccounts[0].apiSecret;
+          }
           
           const metaDeployment = (await axios.get('http://metadata.udf/deployment')).data;
           this.db.data.udfMetadata.email = metaDeployment.deployment.deployer;
