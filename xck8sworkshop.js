@@ -45,10 +45,14 @@ class Xck8sworkshop extends Course {
         let studentCreatedNames;
         if (hash) studentCreatedNames = this.db.data.students[hash].createdNames; 
 
-        const { lowerEmail,  makeId, ceOnPrem, kubeconfig} =  studentCreatedNames || createdNames;
+        const { lowerEmail,  makeId, ceOnPrem, kubeconfig, cek8s} =  studentCreatedNames || createdNames;
         hash = hash || generateHash([lowerEmail]);
                        
-        await this.f5xc.deleteSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
+        await this.f5xc.deleteAppStackSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
+            log.warn({operation:'deleteSite',...e});             
+        });
+
+        await this.f5xc.deleteSite({name: cek8s }).catch((e) =>  { 
             log.warn({operation:'deleteSite',...e});             
         });
 

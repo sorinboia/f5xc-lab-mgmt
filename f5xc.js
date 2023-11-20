@@ -310,6 +310,16 @@ class F5xc {
         return data; 
     }
 
+    async deleteAppstackSite({name}) {       
+        const endPoint = `/api/config/namespaces/system/voltstack_sites/${name}`        
+        const { data } = await this.axios.delete(endPoint, {
+            namespace: 'system',
+            name,
+            'fail_if_referred': true
+        });
+        return data; 
+    }
+
     async createvK8s ({name, namespace}) {        
         const endPoint = `/api/config/namespaces/${namespace}/virtual_k8ss`;
         const data = {
