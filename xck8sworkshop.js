@@ -47,9 +47,12 @@ class Xck8sworkshop extends Course {
 
         const { lowerEmail,  makeId, ceOnPrem, kubeconfig, cek8s} =  studentCreatedNames || createdNames;
         hash = hash || generateHash([lowerEmail]);
-                       
-        await this.f5xc.deleteAppStackSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
-            log.warn({operation:'deleteSite',...e});             
+
+        log.info(`${lowerEmail} with ${makeId} is being deleted`);
+        
+        
+        await this.f5xc.deleteAppStackSite({ name: ceOnPrem.clusterName }).catch((e) =>  { 
+            log.warn({operation:'deleteAppStackSite',...e});             
         });
 
         await this.f5xc.deleteSite({name: cek8s }).catch((e) =>  { 
@@ -60,8 +63,7 @@ class Xck8sworkshop extends Course {
             log.warn({operation:'deleteKubeconfig',...e});             
         });
                 
-        if (this.db.data.students[hash]) {
-            log.info(`${lowerEmail} with ${makeId} is being deleted`);
+        if (this.db.data.students[hash]) {            
             setTimeout(() => {
                 delete this.db.data.students[hash];
                 this.db.write();

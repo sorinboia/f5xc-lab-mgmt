@@ -40,6 +40,7 @@ fastify.route({
           
           if (email.toLowerCase() == 's.boiangiu@f5.com') email = 'sorinboia@gmail.com';
           if (email.toLowerCase() == 'm.dierick@f5.com') email = 'matt262810@gmail.com';        
+          if (email.toLowerCase() == 'p.cloup@f5.com') email = 'philippe@pipomolo.com';
 
           let result;
           switch (courseId) {
