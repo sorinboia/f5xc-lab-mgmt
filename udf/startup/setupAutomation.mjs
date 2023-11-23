@@ -142,7 +142,7 @@ class setupAutomation {
         try {
           const udfMetadata = this.db.data.udfMetadata;
           
-          const dataToPost = { 
+          let dataToPost = { 
             courseId: this.courseId,
             ...udfMetadata            
           };
