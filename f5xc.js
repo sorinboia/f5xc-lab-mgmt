@@ -244,7 +244,8 @@ class F5xc {
                       "use_http_https_port": {}
                     }
                   },
-                instance_type: 't3.xlarge'
+                instance_type: 't3.xlarge',
+                ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9a7yEEW1doV3T6RQQ7HqSc5zKqVsmE8+ANE0o6mNH0W/255M35TYKUao5Iz4QYA3ZqyBF3BBviW96XUibZ0XAMuxNU7uiySLCiOgm+aYyymRTqTgtebZJCQ3nPJbCIuqfZow4e98jImyEDn0MIuMBXAAD72hsaZjRGg+u42I/S+sMlm5s0xRihsLn/Su8ntr3tI2prA4W3h2oBEzNIRbg4/HtY3zv3cPwfXlH1xKSJDkUOHAWC9AzBsJ5q/b0MA7DjsDBa11b/McAAmaX4H17ed6N+h6QT8PWTJkxMew6OP8COERWi9tPyr8RTK9DuBa18g6V2VSGJBMpCzk72pdz sorin@TLV-L-00040841'
             }
         }
         
