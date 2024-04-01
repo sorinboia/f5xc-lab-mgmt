@@ -43,6 +43,7 @@ resource "aws_instance" "ce" {
   availability_zone           = var.aws_az1
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.sgweb.id]
+  user_data                   = data.template_file.ce_user_data.rendered
 
 }
 
