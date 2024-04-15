@@ -42,7 +42,7 @@ fastify.route({
           if (email.toLowerCase() == 'm.dierick@f5.com') email = 'matt262810@gmail.com';        
           if (email.toLowerCase() == 'p.cloup@f5.com') email = 'philippe@pipomolo.com';
           if (email.toLowerCase() == 'p.zoller@f5.com') email = 'patrick.zoller@gmx.de';
-
+          if (email.toLowerCase() == 'a.vistola@f5.com') email = 'alfredo@vistola.de';
           let result;
           switch (courseId) {
             case 'f5xcemeaworkshop':
