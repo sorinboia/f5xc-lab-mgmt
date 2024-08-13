@@ -49,6 +49,17 @@ const main = async () => {
       await runSetup.run();
       break;
 
+    case 'f5xcemeaaiworkshop':
+      runSetup = new setupAutomation ({ 
+        courseId: course,
+        f5xcLabMgmtDomain,
+        steps: [          
+          'f5xcCreateUserEnv'
+        ]
+      })
+      await runSetup.run();
+      break;
+
     default:
       console.log('Unknown course')
       break;
