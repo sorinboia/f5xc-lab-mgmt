@@ -20,14 +20,14 @@ import Xcworkshop from './xcworkshop.js';
 import Xck8sworkshop from './xck8sworkshop.js';
 import Xcapiworkshop from './xcapiworkshop.js';
 import Xcaisecurity from './xcaisecurity.js';
-let f5xcemeaworkshop, f5xcemeak8sworkshop, f5xcemeaapiworkshop, f5xcemeaaisecurity;
+let f5xcemeaworkshop, f5xcemeak8sworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
   f5xcemeaworkshop = new Xcworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaworkshop'});
   f5xcemeak8sworkshop = new Xck8sworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeak8sworkshop'});
   f5xcemeaapiworkshop = new Xcapiworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaapiworkshop'});
-  f5xcemeaaisecurity = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaisecurity'});
+  f5xcemeaaiworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaiworkshop'});
 }
 
 
@@ -56,8 +56,8 @@ fastify.route({
             case 'f5xcemeak8sworkshop':
               result = await f5xcemeak8sworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
               break;
-            case 'f5xaisecurity':
-              result = await f5xaisecurity.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
+            case 'f5xcemeaaiworkshop':
+              result = await f5xcemeaaiworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
               break;              
             default:
               result = {success:'fail',msg:'Unknow courseId'}
@@ -95,8 +95,8 @@ fastify.route({
         case 'f5xcemeak8sworkshop':
           result = await f5xcemeak8sworkshop.getStudentDetails({ email });    
           break;
-        case 'f5xaisecurity':
-          result = await f5xaisecurity.getStudentDetails({ email });    
+        case 'f5xcemeaaiworkshop':
+          result = await f5xcemeaaiworkshop.getStudentDetails({ email });    
           break;        
         default:
           result = {success:'fail',msg:'Unknow courseId'}
@@ -129,7 +129,7 @@ fastify.route({
       f5xcemeaworkshop = new Xcworkshop({...request.body, courseId: 'f5xcemeaworkshop' });
       f5xcemeak8sworkshop = new Xck8sworkshop({...request.body, courseId: 'f5xcemeak8sworkshop' });      
       f5xcemeaapiworkshop = new Xcapiworkshop({...request.body, courseId: 'f5xcemeaapiworkshop' });      
-      f5xcemeaaisecurity = new Xcaisecurity({...request.body, courseId: 'f5xcemeaaisecurity' });      
+      f5xcemeaaiworkshop = new Xcaisecurity({...request.body, courseId: 'f5xcemeaaiworkshop' });      
   }
 });
 
