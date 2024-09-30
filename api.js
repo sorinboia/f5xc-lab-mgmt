@@ -17,14 +17,16 @@ const fastify = Fastify({
 
 
 import Xcworkshop from './xcworkshop.js';
+import Xcmcnworkshop from './xcmcnworkshop.js';
 import Xck8sworkshop from './xck8sworkshop.js';
 import Xcapiworkshop from './xcapiworkshop.js';
 import Xcaisecurity from './xcaisecurity.js';
-let f5xcemeaworkshop, f5xcemeak8sworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop;
+let f5xcemeaworkshop,  f5xcemeak8sworkshop, f5xcemeamcnworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
   f5xcemeaworkshop = new Xcworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaworkshop'});
+  f5xcemeamcnworkshop = new Xcmcnworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeamcnworkshop'});
   f5xcemeak8sworkshop = new Xck8sworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeak8sworkshop'});
   f5xcemeaapiworkshop = new Xcapiworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaapiworkshop'});
   f5xcemeaaiworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaiworkshop'});
@@ -50,6 +52,9 @@ fastify.route({
             case 'f5xcemeaworkshop':
               result = await f5xcemeaworkshop.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
               break;
+            case 'f5xcemeamcnworkshop':
+              result = await f5xcemeamcnworkshop.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
+              break;              
             case 'f5xcemeaapiworkshop':
               result = await f5xcemeaapiworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
               break;
@@ -87,7 +92,9 @@ fastify.route({
         case 'f5xcemeaworkshop':
           result = await f5xcemeaworkshop.getStudentDetails({ email });      
           break;
-
+        case 'f5xcemeamcnworkshop':
+          result = await f5xcemeamcnworkshop.getStudentDetails({ email });      
+          break;
         case 'f5xcemeaapiworkshop':
           result = await f5xcemeaapiworkshop.getStudentDetails({ email });    
           break;          
@@ -127,6 +134,7 @@ fastify.route({
   handler: async (request,reply) => {              
       request.log.info('Credentials received for F5XC');
       f5xcemeaworkshop = new Xcworkshop({...request.body, courseId: 'f5xcemeaworkshop' });
+      f5xcemeamcnworkshop = new Xcmcnworkshop({...request.body, courseId: 'f5xcemeamcnworkshop' });
       f5xcemeak8sworkshop = new Xck8sworkshop({...request.body, courseId: 'f5xcemeak8sworkshop' });      
       f5xcemeaapiworkshop = new Xcapiworkshop({...request.body, courseId: 'f5xcemeaapiworkshop' });      
       f5xcemeaaiworkshop = new Xcaisecurity({...request.body, courseId: 'f5xcemeaaiworkshop' });      

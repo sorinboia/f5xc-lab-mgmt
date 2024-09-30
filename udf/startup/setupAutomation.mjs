@@ -102,6 +102,7 @@ class setupAutomation {
 
             case 'f5xcemeaapiworkshop':              
               break; 
+
             case 'f5xcemeaaiworkshop':              
             case 'f5xcemeamcnworkshop':
               this.db.data.udfMetadata.hostArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
@@ -220,7 +221,7 @@ class setupAutomation {
             hostname: createdUserData.createdNames.ceOnPrem.hostname + i,
             latitude: '32.06440042393975',
             longitude: '34.894059728328465',
-            certified_hardware: 'kvm-voltmesh',
+            certified_hardware: 'kvm-regular-nic-voltmesh',
             primary_outside_nic: 'eth0'
           }
           const ip = `10.1.1.${i}:65500`;
