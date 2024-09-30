@@ -96,6 +96,7 @@ class setupAutomation {
           switch (this.courseId) {
             case 'f5xcemeaworkshop':              
             case 'f5xcemeak8sworkshop':
+            case 'f5xcemeamcnworkshop':
               this.db.data.udfMetadata.hostArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
               this.db.data.udfMetadata.ceArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'F5XC CE ( On prem )'}).accessMethods.https,{label:'Arcadia CE'}).host;
               break;
