@@ -232,6 +232,25 @@ class setupAutomation {
             }
           })).data;
         }
+
+        for (let i = 10; i <= 12; i++) {
+          const onPremCePostData = {
+            token: '771e948b-f6ef-4338-9b50-953762f7a2a7',
+            cluster_name: createdUserData.createdNames.ceOnPrem.clusterName + '-vrrp',
+            hostname: createdUserData.createdNames.ceOnPrem.hostname + i,
+            latitude: '32.06440042393975',
+            longitude: '34.894059728328465',
+            certified_hardware: 'kvm-regular-nic-voltmesh',
+            primary_outside_nic: 'eth0'
+          }
+          const ip = `10.1.1.${i}:65500`;
+
+          const onPremCeRegData = (await axios.post(`https://${ip}/api/ves.io.vpm/introspect/write/ves.io.vpm.config/update`, onPremCePostData,{
+            headers: {
+                Authorization: 'Basic YWRtaW46Vm9sdGVycmExMjM='
+            }
+          })).data;
+        }
         
         
     

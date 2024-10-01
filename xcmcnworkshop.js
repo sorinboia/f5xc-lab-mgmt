@@ -32,12 +32,12 @@ class Xcmcnworkshop extends Course {
         
         const { hash, namespace, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames } = initNewStudent;
 
-        if (!err) {
-            await this.f5xc.createCloudCredentials({name: ccName, namespace, awsApiKey, awsApiSecret }).catch((e) =>  {                     
-                log.warn({operation:'createCloudCredentials',...e}); 
-                err = {operation:'createCloudCredentials',...e};                
-            });
-        }
+        // if (!err) {
+        //     await this.f5xc.createCloudCredentials({name: ccName, namespace, awsApiKey, awsApiSecret }).catch((e) =>  {                     
+        //         log.warn({operation:'createCloudCredentials',...e}); 
+        //         err = {operation:'createCloudCredentials',...e};                
+        //     });
+        // }
 
         if (!err) {
             queue.push({f5xc:this.f5xc ,log , lowerEmail,makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId });
@@ -65,17 +65,22 @@ class Xcmcnworkshop extends Course {
         const { lowerEmail, namespace, ccName, awsSiteName, ceOnPrem, makeId} =  studentCreatedNames || createdNames;
         hash = hash || generateHash([lowerEmail]);
                        
-        await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
-            log.warn({operation:'deleteAwsVpcSite',...e});             
-        });
+        // await this.f5xc.deleteAwsVpcSite({ name:awsSiteName }).catch((e) =>  { 
+        //     log.warn({operation:'deleteAwsVpcSite',...e});             
+        // });
 
-        await this.f5xc.deleteCloudCredentials({ name:ccName }).catch((e) =>  { 
-            log.warn({operation:'deleteCloudCredentials',...e});             
-        });
+        // await this.f5xc.deleteCloudCredentials({ name:ccName }).catch((e) =>  { 
+        //     log.warn({operation:'deleteCloudCredentials',...e});             
+        // });
 
-        await this.f5xc.deleteSite({name:ceOnPrem.clusterName }).catch((e) =>  { 
-            log.warn({operation:'deleteSite',...e});             
-        });
+        // THIS PART IS DISABLED UNTIL IT WILL BE PUBLISHED TO EVERYONE        
+        // await this.f5xc.deleteSite({name:ceOnPrem.clusterName + '-bgp' }).catch((e) =>  { 
+        //     log.warn({operation:'deleteSite',...e});             
+        // });
+        // 
+        // await this.f5xc.deleteSite({name:ceOnPrem.clusterName + '-vrrp' }).catch((e) =>  { 
+        //     log.warn({operation:'deleteSite',...e});             
+        // });
                 
         if (this.db.data.students[hash]) {
             log.info(`${lowerEmail} with ${makeId} is being deleted`);
@@ -130,19 +135,29 @@ class Xcmcnworkshop extends Course {
                 const log = this.log[hash] || fastifyLog;
                 
                 let { state, clusterName } = student.ceRegistration;
-                clusterName = clusterName + '-bgp';
+                
                                 
                 if (state !== 'APPROVED') {                    
-                    const siteData = await this.f5xc.listRegistrationsBySite({name: clusterName});
+                    const siteDataBgp = await this.f5xc.listRegistrationsBySite({name: clusterName + '-bgp'});
+                    const siteDataVrrp = await this.f5xc.listRegistrationsBySite({name: clusterName + '-vrrp'});
                     
-                    if ( siteData.items.length == 3) {
-                        for (let i = 0; i < siteData.items.length; i++) {
-                            const regName = siteData.items[i].name;
-                            const regPassport = siteData.items[i].object.spec.gc_spec.passport;
+                    if ( siteDataBgp.items.length == 3 && siteDataVrrp.items.length == 3) {
+                        for (let i = 0; i < siteDataBgp.items.length; i++) {
+                            const regName = siteDataBgp.items[i].name;
+                            const regPassport = siteDataBgp.items[i].object.spec.gc_spec.passport;
                             regPassport.cluster_size = 3;
                             const approvalState = await this.f5xc.registrationApprove({name:regName, passport:regPassport })
                             
                         }
+
+                        for (let i = 0; i < siteDataVrrp.items.length; i++) {
+                            const regName = siteDataVrrp.items[i].name;
+                            const regPassport = siteDataVrrp.items[i].object.spec.gc_spec.passport;
+                            regPassport.cluster_size = 3;
+                            const approvalState = await this.f5xc.registrationApprove({name:regName, passport:regPassport })
+                            
+                        }
+
                         this.db.data.students[hash].ceRegistration.name;
                         this.db.data.students[hash].ceRegistration.state = 'APPROVED';
                         this.db.write();
@@ -189,7 +204,7 @@ class Xcmcnworkshop extends Course {
     }
 
     periodicChecks() {        
-        this.checkF5xcTf();
+        //this.checkF5xcTf();
         this.checkCeReg();
     }
 
