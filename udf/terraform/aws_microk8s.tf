@@ -3,7 +3,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    values = ["*ubuntu*22.04*amd64*20221014"]
+    values = ["*ubuntu*22.04*amd64*"]
   }
 }
 
