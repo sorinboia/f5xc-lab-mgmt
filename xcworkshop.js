@@ -39,9 +39,9 @@ class Xcworkshop extends Course {
             });
         }
 
-        // if (!err) {
-        //     queue.push({f5xc:this.f5xc ,log , lowerEmail,makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId });
-        // }
+        if (!err) {
+            queue.push({f5xc:this.f5xc ,log , lowerEmail,makeId, name: awsSiteName, namespace, cloudCredentials: ccName, awsRegion, awsAz, vpcId, subnetId });
+        }
 
         
         if (!err) {
