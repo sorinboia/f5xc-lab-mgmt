@@ -176,8 +176,3 @@ output "ollama_api_endpoint" {
   description = "Ollama API endpoint"
   value       = "http://${aws_instance.ollama.public_ip}:11434"
 }
-
-output "ollama_public_ip" {
-  description = "Ollama API endpoint"
-  value       = "${aws_instance.ollama.public_ip}"
-}
