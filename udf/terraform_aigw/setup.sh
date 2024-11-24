@@ -32,8 +32,11 @@ docker run -d --gpus=all --network ollama-network \
 echo "Waiting for Ollama container to initialize (30 seconds)..."
 sleep 30
 
-echo "Pulling Llama3 model..."
+echo "Pulling llama3.1:8b model..."
 docker exec ollama ollama pull llama3.1:8b
+
+echo "Pulling mistral:7b model..."
+docker exec ollama ollama pull mistral:7b
 
 echo "Pulling and running OpenWebUI..."
 docker pull ghcr.io/open-webui/open-webui:main
