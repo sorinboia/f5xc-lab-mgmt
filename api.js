@@ -25,7 +25,7 @@ import Xcaigwworkshop from './xcaigwworkshop.js';
 
 
 
-let f5xcemeaworkshop,  f5xcemeak8sworkshop, f5xcemeamcnworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop;
+let f5xcemeaworkshop,  f5xcemeak8sworkshop, f5xcemeamcnworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop, f5xcemeaaigwworkshop;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
@@ -34,7 +34,8 @@ if (args[0]) {
   f5xcemeak8sworkshop = new Xck8sworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeak8sworkshop'});
   f5xcemeaapiworkshop = new Xcapiworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaapiworkshop'});
   f5xcemeaaiworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaiworkshop'});
-  f5xcemeaaigwworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaigwworkshop'});
+  f5xcemeaaigwworkshop = new Xcaigwworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaaigwworkshop'});
+  
 }
 
 

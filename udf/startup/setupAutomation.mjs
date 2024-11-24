@@ -148,7 +148,7 @@ class setupAutomation {
         exec(`aws configure set aws_access_key_id ${this.db.data.udfMetadata.awsApiKey}`);
         exec(`aws configure set aws_secret_access_key ${this.db.data.udfMetadata.awsApiSecret}`);
         
-        exec('./home/ubuntu/lab/udf/terraform_aigw/aws_policy_update.sh');
+        exec('/home/ubuntu/lab/udf/terraform_aigw/aws_policy_update.sh');
 
         exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw init');
         exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
