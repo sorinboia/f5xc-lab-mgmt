@@ -21,6 +21,10 @@ import Xcmcnworkshop from './xcmcnworkshop.js';
 import Xck8sworkshop from './xck8sworkshop.js';
 import Xcapiworkshop from './xcapiworkshop.js';
 import Xcaisecurity from './xcaisecurity.js';
+import Xcaigwworkshop from './xcaigwworkshop.js';
+
+
+
 let f5xcemeaworkshop,  f5xcemeak8sworkshop, f5xcemeamcnworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop;
 
 const args = process.argv.slice(2);
@@ -30,6 +34,7 @@ if (args[0]) {
   f5xcemeak8sworkshop = new Xck8sworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeak8sworkshop'});
   f5xcemeaapiworkshop = new Xcapiworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaapiworkshop'});
   f5xcemeaaiworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaiworkshop'});
+  f5xcemeaaigwworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaigwworkshop'});
 }
 
 
@@ -64,6 +69,9 @@ fastify.route({
             case 'f5xcemeaaiworkshop':
               result = await f5xcemeaaiworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
               break;              
+            case 'f5xcemeaaigwworkshop':
+              result = await f5xcemeaaigwworkshop.newStudent({ ...request.body, email, ip: request.ip, log: request.log });    
+              break;               
             default:
               result = {success:'fail',msg:'Unknow courseId'}
           }          
@@ -105,6 +113,9 @@ fastify.route({
         case 'f5xcemeaaiworkshop':
           result = await f5xcemeaaiworkshop.getStudentDetails({ email });    
           break;        
+        case 'f5xcemeaaigwworkshop':
+          result = await f5xcemeaaigwworkshop.getStudentDetails({ email });    
+        break;             
         default:
           result = {success:'fail',msg:'Unknow courseId'}
       }              
@@ -138,6 +149,7 @@ fastify.route({
       f5xcemeak8sworkshop = new Xck8sworkshop({...request.body, courseId: 'f5xcemeak8sworkshop' });      
       f5xcemeaapiworkshop = new Xcapiworkshop({...request.body, courseId: 'f5xcemeaapiworkshop' });      
       f5xcemeaaiworkshop = new Xcaisecurity({...request.body, courseId: 'f5xcemeaaiworkshop' });      
+      f5xcemeaaigwworkshop = new Xcaigwworkshop({...request.body, courseId: 'f5xcemeaaigwworkshop' });      
   }
 });
 

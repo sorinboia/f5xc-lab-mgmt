@@ -60,6 +60,18 @@ const main = async () => {
       await runSetup.run();
       break;
 
+    case 'f5xcemeaaigwworkshop':
+      runSetup = new setupAutomation ({ 
+        courseId: course,
+        f5xcLabMgmtDomain,
+        steps: [          
+          'f5xcCreateUserEnv',
+          'terraform_aigw'
+        ]
+      })
+      await runSetup.run();
+      break;
+
     case 'f5xcemeamcnworkshop':
         runSetup = new setupAutomation ({ 
         courseId: course,
