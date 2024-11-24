@@ -75,8 +75,8 @@ class Course {
 
     getStudentDetails({email}) {
         const hash = generateHash([email.toLowerCase()]);  
-        const { createdNames, hostArcadia, ceArcadia } =  this.db.data.students[hash]
-        return { ...createdNames, hostArcadia, ceArcadia  };
+        const { createdNames, hostArcadia, ceArcadia, ollama } =  this.db.data.students[hash]
+        return { ...createdNames, hostArcadia, ceArcadia, ollama  };
     }
 
     async newStudent({ email, hostArcadia, ceArcadia, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {                
