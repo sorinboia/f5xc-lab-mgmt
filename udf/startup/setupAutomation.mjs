@@ -104,6 +104,7 @@ class setupAutomation {
               break; 
 
             case 'f5xcemeaaiworkshop':              
+            case 'f5xcemeaaigwworkshop':
             case 'f5xcemeamcnworkshop':
               this.db.data.udfMetadata.hostArcadia = _.find(_.find(metaDeployment.deployment.components,{name:'MicroK8s'}).accessMethods.https,{label:'Arcadia OnPrem'}).host;
               break;                           
