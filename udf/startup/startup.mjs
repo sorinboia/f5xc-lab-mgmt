@@ -77,7 +77,7 @@ const main = async () => {
         courseId: course,
         f5xcLabMgmtDomain,
         steps: [          
-          'terraform_aigw',        
+          'terraform_aigw_agility',        
         ]
       })
       await runSetup.run();
