@@ -168,6 +168,32 @@ class setupAutomation {
       return {state, output, error};    
     }
 
+    async terraform_aigw_agility() {      
+      let state = 3, error, output;
+      try {
+        exec(`aws configure set aws_access_key_id ${this.db.data.udfMetadata.awsApiKey}`);
+        exec(`aws configure set aws_secret_access_key ${this.db.data.udfMetadata.awsApiSecret}`);
+        
+        exec('/home/ubuntu/lab/udf/terraform_aigw/aws_policy_update.sh');
+
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw init');
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
+        output = JSON.parse(exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw output -json'));    
+        state = 1;
+
+        this.db.data.udfMetadata.ollama = output;
+        this.db.write();
+
+        fs.writeFileSync('/home/ubuntu/llm.json', JSON.stringify(output, null, 2));
+      } catch (e) {    
+        state = 2;
+        error = e.stack || e;
+      }
+
+      return {state, output, error};    
+    }
+
 
     async f5xcCreateUserEnv() {              
         let state = 3, error, output;
