@@ -185,7 +185,7 @@ class setupAutomation {
         this.db.data.udfMetadata.ollama = output;
         this.db.write();
 
-        fs.writeFileSync('/home/ubuntu/llm.json', JSON.stringify(output, null, 2));
+        //fs.writeFileSync('/home/ubuntu/llm.json', JSON.stringify(output, null, 2));
       } catch (e) {    
         state = 2;
         error = e.stack || e;
