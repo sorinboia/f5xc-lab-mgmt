@@ -188,13 +188,13 @@ class setupAutomation {
         
         exec(`find /home/ubuntu/aigw_configs -type f -exec sed -i 's/ollama_public_ip/${output.ollama_public_ip.value}/g' {} +`);
         exec(`curl --data-binary "@/home/ubuntu/aigw_configs/initial_config.yaml" http://10.1.1.5:8080/v1/config`)
+        exec(`curl  -H "Host: arcadia.access.udf.f5.com" -F 'files=@/home/ubuntu/aigw_configs/company_info.txt' http://10.1.1.6:31970/v1/ai-rag/uploadFiles`)
         
         state = 1;                        
         
         this.db.data.udfMetadata.ollama = output;
         this.db.write();
-        
-        //fs.writeFileSync('/home/ubuntu/llm.json', JSON.stringify(output, null, 2));
+                
       } catch (e) {    
         state = 2;
         error = e.stack || e;
