@@ -186,7 +186,7 @@ class setupAutomation {
         
         exec('cp -r /home/ubuntu/appworld/aigw_configs /home/ubuntu/aigw_configs');
         
-        exec(`find /home/ubuntu/aigw_configs -type f -exec sed -i 's/\$\$ollama_public_ip\$\$/${output.ollama_public_ip.value}/g' {} +`);
+        exec(`find /home/ubuntu/aigw_configs -type f -exec sed -i 's/ollama_public_ip/${output.ollama_public_ip.value}/g' {} +`);
         exec(`curl --data-binary "@/home/ubuntu/aigw_configs/initial_config.yaml" http://10.1.1.5:8080/v1/config`)
         
         state = 1;                        
