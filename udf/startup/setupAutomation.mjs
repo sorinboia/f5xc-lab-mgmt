@@ -180,11 +180,18 @@ class setupAutomation {
         exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
         exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
         output = JSON.parse(exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw output -json'));    
-        state = 1;
-
+        
+        exec('git clone https://github.com/sorinboia/aigw-configs.git /home/ubuntu/appworld');
+        exec('cp -r /home/ubuntu/appworld/aigw_configs /home/ubuntu/aigw_configs');
+        
+        exec(`find /path/to/folder -type f -exec sed -i 's/\$\$ollama_public_ip\$\$/${output.ollama_public_ip.value}/g' {} +`);
+        exec(`curl --data-binary "@/home/ubuntu/aigw_configs/initial_config.yaml" http://localhost:8080/v1/config`)
+        
+        state = 1;                        
+        
         this.db.data.udfMetadata.ollama = output;
         this.db.write();
-
+        
         //fs.writeFileSync('/home/ubuntu/llm.json', JSON.stringify(output, null, 2));
       } catch (e) {    
         state = 2;
