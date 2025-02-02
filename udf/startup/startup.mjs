@@ -83,6 +83,17 @@ const main = async () => {
       await runSetup.run();
       break;   
 
+    case 'appworld2025':
+      runSetup = new setupAutomation ({ 
+        courseId: course,
+        f5xcLabMgmtDomain,
+        steps: [          
+          'terraform_aigw_appworld2025',        
+        ]
+      })
+      await runSetup.run();
+      break;         
+
     case 'f5xcemeamcnworkshop':
         runSetup = new setupAutomation ({ 
         courseId: course,

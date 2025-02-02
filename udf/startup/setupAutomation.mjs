@@ -203,6 +203,42 @@ class setupAutomation {
       return {state, output, error};    
     }
 
+    async terraform_aigw_appworld2025() {      
+      let state = 3, error, output;
+      try {
+        exec(`aws configure set aws_access_key_id ${this.db.data.udfMetadata.awsApiKey}`);
+        exec(`aws configure set aws_secret_access_key ${this.db.data.udfMetadata.awsApiSecret}`);
+        
+        exec('/home/ubuntu/lab/udf/terraform_aigw/aws_policy_update.sh');
+
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw init');
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
+        exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw apply --auto-approve');
+        output = JSON.parse(exec('terraform -chdir=/home/ubuntu/lab/udf/terraform_aigw output -json'));    
+        
+        
+        exec('git clone https://github.com/sorinboia/appworld2025.git /home/ubuntu/appworld');
+        
+        exec('cp -r /home/ubuntu/appworld/ /home/ubuntu/configs');
+        
+        exec(`find /home/ubuntu/configs/ -type f -exec sed -i 's/ollama_public_ip/${output.ollama_public_ip.value}/g' {} +`);
+
+        exec('kubectl apply -f /home/ubuntu/configs/arcadia.yaml')
+        
+        
+        
+        state = 1;                        
+        
+        this.db.data.udfMetadata.ollama = output;
+        this.db.write();
+                
+      } catch (e) {    
+        state = 2;
+        error = e.stack || e;
+      }
+
+      return {state, output, error};    
+    }    
 
     async f5xcCreateUserEnv() {              
         let state = 3, error, output;
