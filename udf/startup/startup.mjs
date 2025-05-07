@@ -33,7 +33,7 @@ const main = async () => {
         f5xcLabMgmtDomain,
         steps: [          
           'f5xcCreateUserEnv',
-          'registerOnPremCe',
+          'registerOnPremCeApiSecurityShiftLeft',
         ]
       })
       await runSetup.run();

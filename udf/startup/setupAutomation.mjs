@@ -306,6 +306,36 @@ class setupAutomation {
         return {state, output, error};    
     }
 
+  async registerOnPremCeApiSecurityShiftLeft() {      
+    let state = 3, error, output;
+    try {
+      const ip = '10.1.1.4:65500';
+      const createdUserData = this.db.data.functions.f5xcCreateUserEnv.output;    
+      
+      const onPremCePostData = {
+        token: '771e948b-f6ef-4338-9b50-953762f7a2a7',
+        cluster_name: createdUserData.createdNames.ceOnPrem.clusterName,
+        hostname: createdUserData.createdNames.ceOnPrem.hostname,
+        latitude: '32.06440042393975',
+        longitude: '34.894059728328465',
+        certified_hardware: 'kvm-voltmesh',
+        primary_outside_nic: 'eth0'
+      }
+      const onPremCeRegData = (await axios.post(`https://${ip}/api/ves.io.vpm/introspect/write/ves.io.vpm.config/update`, onPremCePostData,{
+        headers: {
+            Authorization: 'Basic YWRtaW46Vm9sdGVycmExMjM='
+        }
+      })).data;
+  
+      state = 1;
+    } catch (e) {
+      state = 2;
+      error = e.stack || e;
+    }
+  
+    return {state, output, error};    
+  }
+
     async registerOnPremCeMCN() {      
       let state = 3, error, output;
       try {
