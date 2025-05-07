@@ -318,7 +318,7 @@ class setupAutomation {
         hostname: createdUserData.createdNames.ceOnPrem.hostname,
         latitude: '32.06440042393975',
         longitude: '34.894059728328465',
-        certified_hardware: 'site-v2-generic-chw',
+        certified_hardware: 'kvm-voltmesh',
         primary_outside_nic: 'eth0'
       }
       const onPremCeRegData = (await axios.post(`https://${ip}/api/ves.io.vpm/introspect/write/ves.io.vpm.config/update`, onPremCePostData,{
