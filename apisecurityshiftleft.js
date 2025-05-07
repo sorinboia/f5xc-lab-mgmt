@@ -2,7 +2,7 @@ import Course from './course.js';
 
 
 
-class Xcworkshop extends Course {
+class Apisecurityshiftleft extends Course {
     constructor({domain,key,courseId}) {
         super({domain,key,courseId});
         this.periodicChecks();
@@ -88,4 +88,4 @@ class Xcworkshop extends Course {
 
 }
 
-export default Xcworkshop;
+export default Apisecurityshiftleft;
