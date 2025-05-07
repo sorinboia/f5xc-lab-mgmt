@@ -27,6 +27,18 @@ const main = async () => {
       await runSetup.run();
       break;
 
+    case 'apisecurityshiftleft':
+        runSetup = new setupAutomation ({ 
+        courseId: course,
+        f5xcLabMgmtDomain,
+        steps: [          
+          'f5xcCreateUserEnv',
+          'registerOnPremCe',
+        ]
+      })
+      await runSetup.run();
+      break;      
+
     case 'f5xcemeaapiworkshop':      
       runSetup = new setupAutomation ({ 
         courseId: course,

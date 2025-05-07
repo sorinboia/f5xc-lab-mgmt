@@ -22,10 +22,11 @@ import Xck8sworkshop from './xck8sworkshop.js';
 import Xcapiworkshop from './xcapiworkshop.js';
 import Xcaisecurity from './xcaisecurity.js';
 import Xcaigwworkshop from './xcaigwworkshop.js';
+import Apisecurityshiftleft from './apisecurityshiftleft.js'
 
 
 
-let f5xcemeaworkshop,  f5xcemeak8sworkshop, f5xcemeamcnworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop, f5xcemeaaigwworkshop;
+let f5xcemeaworkshop,  f5xcemeak8sworkshop, f5xcemeamcnworkshop, f5xcemeaapiworkshop, f5xcemeaaiworkshop, f5xcemeaaigwworkshop, apisecurityshiftleft;
 
 const args = process.argv.slice(2);
 if (args[0]) {    
@@ -35,6 +36,7 @@ if (args[0]) {
   f5xcemeaapiworkshop = new Xcapiworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaapiworkshop'});
   f5xcemeaaiworkshop = new Xcaisecurity({domain:args[0],key:args[1], courseId: 'f5xcemeaaiworkshop'});
   f5xcemeaaigwworkshop = new Xcaigwworkshop({domain:args[0],key:args[1], courseId: 'f5xcemeaaigwworkshop'});
+  apisecurityshiftleft = new Apisecurityshiftleft({domain:args[0],key:args[1], courseId: 'apisecurityshiftleft'});
   
 }
 
@@ -58,6 +60,9 @@ fastify.route({
             case 'f5xcemeaworkshop':
               result = await f5xcemeaworkshop.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
               break;
+            case 'apisecurityshiftleft':
+              result = await apisecurityshiftleft.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
+              break;              
             case 'f5xcemeamcnworkshop':
               result = await f5xcemeamcnworkshop.newStudent({ ...request.body, email , ip: request.ip, log: request.log });      
               break;              
@@ -101,6 +106,9 @@ fastify.route({
         case 'f5xcemeaworkshop':
           result = await f5xcemeaworkshop.getStudentDetails({ email });      
           break;
+        case 'apisecurityshiftleft':
+          result = await apisecurityshiftleft.getStudentDetails({ email });      
+          break;          
         case 'f5xcemeamcnworkshop':
           result = await f5xcemeamcnworkshop.getStudentDetails({ email });      
           break;
@@ -151,6 +159,7 @@ fastify.route({
       f5xcemeaapiworkshop = new Xcapiworkshop({...request.body, courseId: 'f5xcemeaapiworkshop' });      
       f5xcemeaaiworkshop = new Xcaisecurity({...request.body, courseId: 'f5xcemeaaiworkshop' });      
       f5xcemeaaigwworkshop = new Xcaigwworkshop({...request.body, courseId: 'f5xcemeaaigwworkshop' });      
+      apisecurityshiftleft = new Apisecurityshiftleft({...request.body, courseId: 'apisecurityshiftleft' });
   }
 });
 
