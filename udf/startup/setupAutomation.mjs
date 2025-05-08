@@ -82,7 +82,7 @@ class setupAutomation {
        let state = 3, error, output;
        try {            
           const metaCloudAccounts = (await axios.get('http://metadata.udf/cloudAccounts')).data;          
-          if (metaCloudAccounts.length > 0) {
+          if (metaCloudAccounts) {
             this.db.data.udfMetadata.awsAccountId = metaCloudAccounts.cloudAccounts[0].accountId;
             this.db.data.udfMetadata.awsApiKey = metaCloudAccounts.cloudAccounts[0].apiKey;
             this.db.data.udfMetadata.awsApiSecret = metaCloudAccounts.cloudAccounts[0].apiSecret;
