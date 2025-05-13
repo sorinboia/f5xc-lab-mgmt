@@ -21,6 +21,13 @@ class Apisecurityshiftleft extends Course {
     
 
         if (!err) {
+            await this.f5xc.updateUserForWas({ email ,nsName: namespace }).catch((e) =>  {                     
+                log.warn({operation:'updateUserForWas',...e}); 
+                err = {operation:'updateUserForWas',...e};                
+            });
+        }
+
+        if (!err) {
             this.db.data.students[hash] = { email, hostArcadia, ceArcadia, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
             this.db.write();
