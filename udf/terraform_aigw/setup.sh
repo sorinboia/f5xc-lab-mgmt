@@ -22,7 +22,7 @@ echo "Creating Docker network..."
 docker network create ollama-network || true
 
 echo "Pulling and running Ollama..."
-docker pull ollama/ollama:latest
+docker pull ollama/ollama:0.9.1
 docker run -d --gpus=all --network ollama-network \
     --name ollama \
     -v ollama:/root/.ollama \
