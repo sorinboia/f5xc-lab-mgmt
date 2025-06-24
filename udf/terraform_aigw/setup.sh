@@ -27,7 +27,7 @@ docker run -d --gpus=all --network ollama-network \
     --name ollama \
     -v ollama:/root/.ollama \
     -p 11434:11434 \
-    ollama/ollama
+    ollama/ollama:0.9.1
 
 echo "Waiting for Ollama container to initialize (30 seconds)..."
 sleep 30
