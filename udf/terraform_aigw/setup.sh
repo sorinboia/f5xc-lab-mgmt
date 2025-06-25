@@ -22,12 +22,12 @@ echo "Creating Docker network..."
 docker network create ollama-network || true
 
 echo "Pulling and running Ollama..."
-docker pull ollama/ollama:0.9.1
+docker pull ollama/ollama:0.6.8
 docker run -d --gpus=all --network ollama-network \
     --name ollama \
     -v ollama:/root/.ollama \
     -p 11434:11434 \
-    ollama/ollama:0.9.1
+    ollama/ollama:0.6.8
 
 echo "Waiting for Ollama container to initialize (30 seconds)..."
 sleep 30
