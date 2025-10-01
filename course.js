@@ -54,8 +54,13 @@ const createNames = (email) => {
     const kubeconfig = 'kubeconfig-' + id
 
     const cek8s = 'cek8s' + id;
-    
-    return { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, kubeconfig, cek8s };
+
+    const smsv2Site = {
+        siteName: "smsv2-"+id,
+        tokenName: "smsv2-token-"+id
+    }
+        
+    return { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, kubeconfig, cek8s,smsv2Site };
 }
 
 
@@ -81,7 +86,7 @@ class Course {
 
     async newStudent({ email, hostArcadia, ceArcadia, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, log }) {                
         const createdNames = createNames(email);
-        const { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName } = createdNames;
+        const { lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, smsv2Site } = createdNames;
         let namespace;
         const hash = generateHash([lowerEmail]);
         this.log[hash] = log;
@@ -127,7 +132,7 @@ class Course {
                 },5000);
             })); 
                                             
-            return { hash, namespace, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames }
+            return { hash, namespace, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames,smsv2Site }
                     
         } else {
             log.warn('Student creation failed');

@@ -15,11 +15,31 @@ class Xcapiworkshop extends Course {
             err = initNewStudent;
         }
         
-        const { hash, namespace, kubeconfig, lowerEmail, ccName, awsSiteName, makeId, ceOnPrem, vk8sName, createdNames } = initNewStudent;
+        const { hash, kubeconfig, makeId, ceOnPrem,  createdNames, smsv2Site  } = initNewStudent;
+
+
+        if (!err) {
+            await this.f5xc.createSmsv2Site({name: smsv2Site.siteName  }).catch((e) =>  {                     
+                log.warn({operation:'createSmsv2Site',...e}); 
+                err = {operation:'createSmsv2Site',...e};                
+            });
+            
+        }
+
+        if (!err) {
+            const token = await this.f5xc.createSmsv2Token({name: smsv2Site.tokenName ,siteName: smsv2Site.siteName  }).catch((e) =>  {                     
+                log.warn({operation:'createSmsv2Token',...e}); 
+                err = {operation:'createSmsv2Token',...e};                
+            });
+            smsv2Site.token = token;
+        }
+
+
+
 
         if (!err) {
             
-            this.db.data.students[hash] = { email, hostArcadia, ceArcadia, kubeconfig, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
+            this.db.data.students[hash] = { smsv2Site, email, hostArcadia, ceArcadia, kubeconfig, state:'active',makeId, createdNames, udfHost, ip, region, awsAccountId, awsApiKey, awsApiSecret, awsRegion, awsAz, vpcId, subnetId, f5xcTf: { awsVpcSite:'APPLYING'}, ceRegistration: {state:'NONE', ...ceOnPrem } ,failedChecks: 0, log };
 
             this.db.write();
             log.info('Student created');

@@ -386,6 +386,40 @@ class F5xc {
             });
         return data; 
     }
+
+    async createSmsv2Site ({name}) {        
+        const endPoint = `/api/config/namespaces/system/securemesh_site_v2s`;
+        const data = {
+            metadata: {
+              name,
+              namespace: "system"
+            },
+            spec: {
+                "kvm": {
+                     "not_managed": {}
+                }
+            }
+          }
+                
+        await this.axios.post(endPoint,data);
+    }
+
+    async createSmsv2Token ({name,siteName}) {        
+        const endPoint = `/api/register/namespaces/system/tokens`;
+        const data = {
+            metadata: {
+              name,
+              
+            },
+            spec: {
+                type: "JWT",
+                site_name: siteName
+            }
+          }
+                
+        const result = await this.axios.post(endPoint,data);                                                
+        return result.data.spec.content;
+    }
 }
 
 export default F5xc;
