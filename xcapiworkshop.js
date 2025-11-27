@@ -17,6 +17,12 @@ class Xcapiworkshop extends Course {
         
         const { hash, kubeconfig, makeId, ceOnPrem,  createdNames, smsv2Site  } = initNewStudent;
 
+        if (!err) {
+            await this.f5xc.updateUserForApiSec({ email ,nsName: namespace }).catch((e) =>  {                     
+                log.warn({operation:'updateUserForApiSec',...e}); 
+                err = {operation:'updateUserForApiSec',...e};                
+            });
+        }
 
         if (!err) {
             await this.f5xc.createSmsv2Site({name: smsv2Site.siteName  }).catch((e) =>  {                     
