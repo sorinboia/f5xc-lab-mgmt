@@ -15,10 +15,10 @@ class Xcapiworkshop extends Course {
             err = initNewStudent;
         }
         
-        const { hash, kubeconfig, makeId, ceOnPrem,  createdNames, smsv2Site  } = initNewStudent;
+        const { hash, kubeconfig, makeId, ceOnPrem,  createdNames, smsv2Site, namespace  } = initNewStudent;
 
         if (!err) {
-            await this.f5xc.updateUserForApiSec({ email ,nsName: namespace }).catch((e) =>  {                     
+            await this.f5xc.updateUserForApiSec({ email,nsName: namespace }).catch((e) =>  {                     
                 log.warn({operation:'updateUserForApiSec',...e}); 
                 err = {operation:'updateUserForApiSec',...e};                
             });

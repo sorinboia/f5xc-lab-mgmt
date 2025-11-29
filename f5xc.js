@@ -153,7 +153,7 @@ class F5xc {
         });
     }
 
-    async updateUserForApiSec({email,nsName}) {
+    async updateUserForApiSec({ email, nsName }) {
         const endPoint = '/api/web/custom/namespaces/system/user_roles';
         const data = {
             'email': email.toLowerCase(),
@@ -178,7 +178,7 @@ class F5xc {
                 {
                     "namespace":"shared",
                     "role":"f5xc-multi-cloud-network-connect-monitor"
-                 },                
+                },                
                 {
                    "namespace": nsName,
                    "role":"ves-io-power-developer-role"
